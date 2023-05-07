@@ -171,7 +171,7 @@ void ListDumpGraph(List *lst, int32_t fd_dump)
     dprintf(fd_dump_graph, "}\n");
 
     dprintf(fd_dump_graph, "{rank=same;\n");
-    ListDumpGraphNodeRecord(lst, 0, COLOR_NODE_ROOT, fd_dump_graph);
+    // ListDumpGraphNodeRecord(lst, 0, COLOR_NODE_ROOT, fd_dump_graph);
 
     Node *node = lst->dummy_head;
     for (uint32_t i = 0; i < lst->size + 1; ++i)
@@ -193,7 +193,7 @@ void ListDumpGraph(List *lst, int32_t fd_dump)
     // ListDumpGraphEdge(DUMP_NODE_TAIL, ListGetTail(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
     // ListDumpGraphEdge(DUMP_NODE_FREE, ListGetFree(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
 
-    dprintf(fd_dump_graph, "{rank=max;nodemax[style=invis];} node0->nodemax[color=\"#00000000\"];");
+    // dprintf(fd_dump_graph, "{rank=max;nodemax[style=invis];} node0->nodemax[color=\"#00000000\"];");
     dprintf(fd_dump_graph, "}\n");
 
     close(fd_dump_graph);
@@ -223,9 +223,9 @@ void ListDumpGraphNode(List *lst, Node *anch, const char *fillcolor, int32_t fd_
 
 void ListDumpGraphNodeRecord(List *lst, Node *anch, const char *fillcolor, int32_t fd_dump)
 {
-    dprintf(fd_dump, "node%p[shape=record, style=\"filled\", fillcolor=\"%s\", label = \
-                      \"{ind: %p | val: %s | {prev: %d | next: %d}}\", \
-                      width=2, height=1, fixedsize=true];\n", 
+    dprintf(fd_dump, "node%p[shape=record, style=\"filled\", fillcolor=\"%s\", label ="
+                      "\"{ind: %p | val: %s | {prev: %p | next: %p}}\"," 
+                      "width=2, height=1, fixedsize=true];\n", 
             anch, fillcolor, anch, anch->val, anch->prev, anch->next);
 }
 
