@@ -9,24 +9,22 @@
 #include "list.h"
 
 void ListCtor(List       *lst,
-              Node       *dummy_head,
               BufferList *free_buf)
 {
     ASSERT(lst        != NULL);
-    ASSERT(dummy_head != NULL);
     ASSERT(free_buf   != NULL);
 
-    *dummy_head =
+    lst->free_buf   = free_buf;
+    lst->dummy_head = BufferListPop(free_buf);
+
+    *lst->dummy_head =
         {
             .val  = NULL,
-            .next = dummy_head,
-            .prev = dummy_head
+            .next = lst->dummy_head,
+            .prev = lst->dummy_head
         };
 
     lst->size = 0;
-
-    lst->dummy_head = dummy_head;
-    lst->free_buf   = free_buf;
 }
 
 void ListDtor(List *lst)

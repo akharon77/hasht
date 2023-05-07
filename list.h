@@ -7,10 +7,7 @@
 #include "list_debug.h"
 #include "list_struct.h"
 
-void        ListCtor                (List       *lst,
-                                     Node       *dummy_head,
-                                     BufferList *free_buf);
-
+void        ListCtor                (List *lst, BufferList *free_buf);
 void        ListDtor                (List *lst);
 
 Node*       ListInsertBefore        (List *lst, const char *val, Node *anch);

@@ -9,7 +9,6 @@ struct HashTable
 {
     uint32_t      size;
 
-    Node         *dummy_heads;
     List         *lists;
     BufferList    free_buf;
 
