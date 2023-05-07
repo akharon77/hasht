@@ -11,6 +11,8 @@ void HashTableCtor(HashTable *hasht, uint32_t size, HashFunction hash_fun)
     ASSERT(hasht    != NULL);
     ASSERT(hash_fun != NULL);
 
+    hasht->size = size;
+
     BufferListCtor(&hasht->free_buf, EXP_ELEMS_BY_LIST * size);
 
     hasht->lists = (List*) calloc(size, sizeof(List));
@@ -59,7 +61,7 @@ Node* HashTableFind(const HashTable *hasht, const char *str, uint32_t *ind)
 
     Node *head = ListGetHead(hasht->lists + *ind);
 
-    for (int32_t i = 0; i < hasht->lists[*ind].size; ++i)
+    for (uint32_t i = 0; i < hasht->lists[*ind].size; ++i)
     {
         if (strcmp(str, head->val) == 0)
             return head;

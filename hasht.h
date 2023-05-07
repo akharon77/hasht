@@ -1,19 +1,7 @@
 #ifndef HASHT_H
 #define HASHT_H
 
-#include "list.h"
-
-typedef uint32_t (*HashFunction)(const char *str);
-
-struct HashTable
-{
-    uint32_t      size;
-
-    List         *lists;
-    BufferList    free_buf;
-
-    HashFunction  hash_fun;
-};
+#include "hasht_struct.h"
 
 void  HashTableCtor   (HashTable *hasht, uint32_t size, HashFunction hash_fun);
 void  HashTableDtor   (HashTable *hasht);

@@ -54,23 +54,23 @@ extern const int32_t  DUMP_NODE_FREE;
 extern const uint64_t POISON;
 extern const double   POISIONED_PERC;
 
-// void        ListPrint               (List *lst);
-// 
+void        ListPrint               (List *lst);
+ 
 // uint32_t    ListStatus              (List *lst);
 // const char* ListErrorDesc           (uint32_t flags);
-// 
-// void        ListDump                (List *lst, int32_t fd_dump);
-// void        ListDumpGraph           (List *lst, int32_t fd_dump);
-// 
-// void        ListDumpGraphInfoNode   (int anch, const char *name, const char *fillcolor, int32_t fd_dump);
-// 
-// void        ListDumpGraphNode       (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
-// 
-// void        ListDumpGraphNodeRecord (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
-// void        ListDumpGraphNodeEdges  (List *lst, int anch, int32_t fd_dump);
-// 
-// void        ListDumpGraphEdge       (int anch1, int anch2, const char *color, int32_t weight, int32_t fd_dump);
-// 
+ 
+void        ListDump                (List *lst, int32_t fd_dump);
+void        ListDumpGraph           (List *lst, int32_t fd_dump);
+
+void        ListDumpGraphInfoNode   (Node *anch, const char *name, const char *fillcolor, int32_t fd_dump);
+
+void        ListDumpGraphNode       (List *lst, Node *anch, const char *fillcolor, int32_t fd_dump);
+
+void        ListDumpGraphNodeRecord (List *lst, Node *anch, const char *fillcolor, int32_t fd_dump);
+void        ListDumpGraphNodeEdges  (List *lst, Node *anch, int32_t fd_dump);
+
+void        ListDumpGraphEdge       (Node *anch1, Node *anch2, const char *color, int32_t weight, int32_t fd_dump);
+ 
 // bool        isBadPtr                (void *ptr);
 // int32_t     min                     (int32_t a, int32_t b);
 // int32_t     max                     (int32_t a, int32_t b);
