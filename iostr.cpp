@@ -1,11 +1,13 @@
-#include <string.h>
-#include <stdlib.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <ctype.h>
-#include "iostr.h"
+
 #include "colors.h"
+#include "general.h"
+#include "iostr.h"
 
 const int MAX_LINE_LEN = 256;
 
@@ -23,7 +25,7 @@ ErrorTag ERROR_TAGS[] =
 
 const char* ERRORS[N_ERRORS] = {};
 
-bool GetOptions(const int argc, const char *argv[], int optionsInd[], const Option exec_options[], int n_exec_options)
+bool GetOptions(int argc, const char *argv[], int optionsInd[], const Option exec_options[], int n_exec_options)
 {
     ASSERT(argv != NULL);
 
@@ -44,64 +46,66 @@ bool GetOptions(const int argc, const char *argv[], int optionsInd[], const Opti
 
 void TextInfoCtor(TextInfo *text)
 {
-    text->nlines = text->size = 0;
-    text->lines = NULL;
+    ASSERT(text != NULL);
+
+    text->size  = 0;
     text->base  = NULL;
+
+    text->words_cnt = 0;
+    text->words     = NULL;
 }
 
-void InputText(TextInfo *text, const char *filename, int *err)
+void TextInfoInputFromFile(TextInfo *text, const char *filename, int *err)
 {
+    ASSERT(text != NULL);
     *err = NO_ERROR;
 
     RET_ERR(filename == NULL, err, FILE_NAME_ERROR);
 
-    int fd = open(filename, O_RDONLY, 0);
+    int32_t fd = open(filename, O_RDONLY, 0);
     RET_ERR(fd == -1, err, FILE_OPEN_ERROR);
 
     struct stat fileStatBuf = {};
     RET_ERR(fstat(fd, &fileStatBuf) != 0, err, FILE_STATS_READING_ERROR);
 
-    size_t  fileSize = (size_t) fileStatBuf.st_size;
-    char   *fileCont = (char*)  calloc(fileSize, sizeof(char));
+    uint32_t  fileSize = (uint32_t) fileStatBuf.st_size + 1;
+    char     *fileCont = (char*)  calloc(fileSize, sizeof(char));
 
     RET_ERR(fileCont == NULL, err, FILE_CONTENT_MALLOC_ERROR);
 
-    ssize_t n_read = read(fd, fileCont, fileSize);
-    RET_ERR(n_read < (ssize_t) fileSize, err, FILE_READING_ERROR);
+    uint64_t n_read = read(fd, fileCont, fileSize);
+    RET_ERR(n_read < (uint64_t) fileSize, err, FILE_READING_ERROR);
 
     text->size = fileSize;
     text->base = fileCont;
 
+    text->base[text->size - 1] = '\0';
+
     close(fd);
 }
 
-void InitTextSep(TextInfo *text)
+void TextInfoPrepare(TextInfo *text)
 {
     ASSERT(text != NULL);
 
-    size_t res   = 0;
-    bool   empty = true;
+    uint32_t res = 0;
 
-    for (size_t i = 0; i < text->size; ++i)
+    for (uint32_t i = 0; i < text->size; ++i)
     {
-        if (!isspace(text->base[i]))
-            empty = false;
+        text->base[i] = tolower(text->base[i]);
 
-        if (text->base[i] == '\n')
-        {
-            if (!empty)
+        if (!isalpha(text->base[i]    ) && i > 0 && 
+             isalpha(text->base[i - 1]))
             {
                 ++res;
                 text->base[i] = '\0';
             }
-            empty = true;
-        }
     }
 
-    text->nlines = res;
+    text->words_cnt = res;
 }
 
-void MarkOutText(TextInfo *text, int *err)
+void TextInfoMarkout(TextInfo *text, int32_t *err)
 {
     ASSERT(text != NULL);
     ASSERT(err  != NULL);
@@ -110,40 +114,27 @@ void MarkOutText(TextInfo *text, int *err)
 
     RET_ERR(text == NULL, err, TEXT_MARKOUT_NULL_ERROR);
 
-    InitTextSep(text);
-    text->lines = (Line*) calloc(text->nlines, sizeof(Line));
+    TextInfoPrepare(text);
+    text->words = (const char**) calloc(text->words_cnt, sizeof(const char*));
 
-    bool isLine = false;
-    int lastNotSpace = 0;
-    size_t currnLines = 0;
-    for (int i = 0; i < (int) text->size; ++i)
+    bool is_word = false;
+    for (uint32_t i = 0, j = 0; i < text->size; ++i)
     {
-        if (!(isspace(text->base[i]) || text->base[i] == '\0'))
-            lastNotSpace = i;
-
         if (text->base[i] == '\0')
-        {
-            text->base[lastNotSpace + 1] = '\0';
-            text->lines[currnLines - 1].len = text->base + lastNotSpace - text->lines[currnLines - 1].ptr + 1;
-            isLine = false;
-        }
-        else if (!isLine && !(isspace(text->base[i]) || text->base[i] == '\0'))
-        {
-            isLine = true;
-            text->lines[currnLines].ptr = text->base + i;
-            text->lines[currnLines].pos = currnLines;
-            ++currnLines;
-        }
+            ++j;
+
+        if (isalpha(text->base[i]) && text->words[j] == NULL)
+            text->words[j] = text->base + i;
     }
 }
 
 void TextInfoDtor(TextInfo *text)
 {
     free(text->base);
-    free(text->lines);
+    free(text->words);
 
     text->base  = NULL;
-    text->lines = NULL;
+    text->words = NULL;
 }
 
 void InitErrorTags()

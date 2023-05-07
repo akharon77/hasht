@@ -2,6 +2,7 @@
 #include <string.h>
 
 #include "hasht.h"
+#include "general.h"
 
 const int32_t EXP_ELEMS_BY_LIST = 3;
 
@@ -57,7 +58,8 @@ Node* HashTableFind(const HashTable *hasht, const char *str, uint32_t *ind)
              *ind      = hash_val % hasht->size;
 
     Node *head = ListGetHead(hasht->lists + *ind);
-    while (head != hasht->dummy_heads + *ind)
+
+    for (int32_t i = 0; i < hasht->lists[*ind].size; ++i)
     {
         if (strcmp(str, head->val) == 0)
             return head;

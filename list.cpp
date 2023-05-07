@@ -6,10 +6,10 @@
 #include <unistd.h>
 
 #include "buf_list.h"
+#include "general.h"
 #include "list.h"
 
-void ListCtor(List       *lst,
-              BufferList *free_buf)
+void ListCtor(List *lst, BufferList *free_buf)
 {
     ASSERT(lst        != NULL);
     ASSERT(free_buf   != NULL);
