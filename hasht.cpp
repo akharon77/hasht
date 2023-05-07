@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 
 #include "hasht.h"
 
@@ -40,5 +41,37 @@ void HashTableDtor(HashTable *hasht)
     BufferListDtor(&hasht->free_buf);
 
     hasht->hash_fun = NULL;
+}
+
+void HashTableInsert(HashTable *hasht, const char *str)
+{
+    ASSERT(hasht != NULL);
+    ASSERT(str   != NULL);
+
+    uint32_t  ind = 0;
+    Node     *res = HashTableFind(hasht, str, &ind);
+
+    if (!res)
+        ListPushBack(hasht->lists + ind, str);
+}
+
+Node* HashTableFind(const HashTable *hasht, const char *str, uint32_t *ind)
+{
+    ASSERT(hasht != NULL);
+    ASSERT(str   != NULL);
+
+    uint32_t  hash_val = hasht->hash_fun(str);
+             *ind      = hash_val % hasht->size;
+
+    Node *head = ListGetHead(hasht->lists + *ind);
+    while (head != hasht->dummy_heads + *ind)
+    {
+        if (strcmp(str, head->val) == 0)
+            return head;
+
+        head = head->next;
+    }
+
+    return NULL;
 }
 
