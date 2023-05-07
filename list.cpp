@@ -16,6 +16,13 @@ void ListCtor(List       *lst,
     ASSERT(dummy_head != NULL);
     ASSERT(free_buf   != NULL);
 
+    *dummy_head =
+        {
+            .val  = -1,
+            .next = dummy_head,
+            .prev = dummy_head
+        };
+
     lst->size = 0;
 
     lst->dummy_head = dummy_head;
@@ -27,6 +34,13 @@ void ListDtor(List *lst)
     ASSERT(lst != NULL);
 
     BufferListDtor(lst->free_buf);
+
+    *lst->dummy_head =
+        {
+            .val = -1,
+            .next = NULL,
+            .prev = NULL
+        };
 
     lst->free_buf   = NULL;
     lst->dummy_head = NULL;
