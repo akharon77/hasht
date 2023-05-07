@@ -1,243 +1,91 @@
+#include <fcntl.h>
+#include <string.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <fcntl.h>
 #include <unistd.h>
-#include <string.h>
 
+#include "buf_list.h"
 #include "list.h"
-#include "list_debug.h"
 
-const int32_t ROOT = 0;
-
-void ListCtor_(List *lst, int32_t size 
-                          ON_DEBUG
-                          (,
-                              int32_t line,
-                              const char *name,
-                              const char *funcname,
-                              const char *filename
-                          ))
+void ListCtor(List       *lst,
+              Node       *dummy_head,
+              BufferList *free_buf)
 {
-    ASSERT(lst  != NULL);
-    ASSERT(size > 0);
+    ASSERT(lst        != NULL);
+    ASSERT(dummy_head != NULL);
+    ASSERT(free_buf   != NULL);
 
     lst->size = 0;
-    lst->cap  = size;
 
-    lst->free = 1;
-
-    lst->buf = (Node*) calloc(size + 1, sizeof(Node));
-
-    ASSERT(lst->buf != NULL);
-
-    for (int32_t i = 0; i < size + 1; ++i)
-        lst->buf[i] = 
-            {
-                .val   = -1,
-                .next  = i + 1,
-                .prev  = -1
-            };
-
-    lst->buf[size].next = -1;
-
-    lst->buf[ROOT] = 
-        {
-            .val   = 0,
-            .next  = ROOT,
-            .prev  = ROOT
-        };
-
-    ON_DEBUG
-    (
-        lst->info =
-            {
-                .line     = line,
-                .name     = name + 1,
-                .funcname = funcname,
-                .filename = filename
-            };
-    )
-
-    ListOk(lst);
-    ListLog(lst);
+    lst->dummy_head = dummy_head;
+    lst->free_buf   = free_buf;
 }
 
 void ListDtor(List *lst)
 {
     ASSERT(lst != NULL);
-    ListOk(lst);
-    ListLog(lst);
 
-    free(lst->buf);
-    ListFillStructurePosion(lst);
+    BufferListDtor(lst->free_buf);
+
+    lst->free_buf   = NULL;
+    lst->dummy_head = NULL;
+    lst->size = 0;
 }
 
-int32_t ListInsertBefore(List *lst, int32_t val, int32_t anch)
+Node* ListInsertBefore(List *lst, int32_t val, Node *anch)
 {
-    ASSERT(lst != NULL);
-    ASSERT(anch < lst->cap + 1 && anch > -1);
-    ListOk(lst);
+    ASSERT(lst  != NULL);
+    ASSERT(anch != NULL);
 
-    if (anch != ROOT)
-        lst->is_linearized = false;
+    Node *npos = BufferListPop(lst->free_buf);
 
-    if (lst->size + 1 > lst->cap)
-        ListRealloc(lst, lst->cap * 2, false);
+    Node *anch_prev = anch->prev;
 
-    int32_t npos = lst->free;
-    lst->free = lst->buf[lst->free].next;
-
-    int32_t anch_prev = lst->buf[anch].prev;
-
-    lst->buf[npos] = 
+    *npos = 
         {
-            .val   = val,
-            .next  = anch,
-            .prev  = anch_prev
+            .val  = val,
+            .next = anch,
+            .prev = anch_prev
         };
 
-    lst->buf[anch_prev].next = npos;
-    lst->buf[anch].prev      = npos;
+    anch_prev->next = npos;
+    anch     ->prev = npos;
     
     ++lst->size;
-
-    ListOk(lst);
-    ListLog(lst);
 
     return npos;
 }
 
-void ListLinearize(List *lst)
+Node* ListInsertAfter(List *lst, int32_t val, Node *anch)
 {
-    ASSERT(lst != NULL);
-    ListOk(lst);
-
-    Node *new_buf = (Node*) calloc(lst->cap + 1, sizeof(Node));
-    ASSERT(new_buf != NULL);
-
-    new_buf[ROOT] = 
-        {
-            .val   = 0,
-            .next  = 1,
-            .prev  = lst->size
-        };
-
-    int32_t vertex = ListGetHead(lst), i = 1;
-    while (vertex != ROOT)
-    {
-        new_buf[i] = 
-            {
-                .val  = ListGetValue(lst, vertex),
-                .next = i + 1,
-                .prev = i - 1
-            };
-
-        vertex = ListGetNext(lst, vertex);
-        ++i;
-    }
-
-    free(lst->buf);
-
-    for (int32_t anch = lst->size + 1; anch < lst->cap + 1; ++anch)
-        new_buf[anch] = 
-            {
-                .val  = -1,
-                .next = anch + 1 <= lst->cap ? anch + 1 : -1,
-                .prev = -1
-            };
-
-    new_buf[lst->size].next = ROOT;
-
-    lst->buf = new_buf;
-    if (lst->size == lst->cap)
-        lst->free = -1;
-    else
-        lst->free = lst->size + 1;
-
-    ListOk (lst);
-    ListLog(lst);
+    return ListInsertBefore(lst, val, anch->next);
 }
 
-void ListRealloc(List *lst, int32_t new_cap, bool linear)
+void ListErase(List *lst, Node *anch)
 {
-    ASSERT(lst != NULL);
-    ListOk(lst);
+    ASSERT(lst  != NULL);
+    ASSERT(anch != NULL);
 
-    if (linear || new_cap < lst->cap)
-        ListLinearize(lst);
+    Node *prev_anch = anch->prev,
+         *next_anch = anch->next;
 
-    Node *new_buf = (Node*) realloc(lst->buf, (new_cap + 1) * sizeof(Node));
+    prev_anch->next = next_anch;
+    next_anch->prev = prev_anch;
 
-    ASSERT(new_buf != NULL);
-    
-    for (int32_t anch = lst->cap + 1; anch < new_cap + 1; ++anch)
-        new_buf[anch] = 
-            {
-                .val  = -1,
-                .next = anch + 1 <= new_cap ? anch + 1 : -1,
-                .prev = -1
-            };
-
-    lst->buf  = new_buf;
-
-    if (lst->size == new_cap)
-        lst->free = -1;
-    else
-        lst->free = lst->cap + 1;
-
-    lst->cap  = new_cap;
-
-    ListOk(lst);
-    ListLog(lst);
-}
-
-int32_t ListInsertAfter(List *lst, int32_t val, int32_t anch)
-{
-    return ListInsertBefore(lst, val, lst->buf[anch].next);
-}
-
-void ListErase(List *lst, int32_t anch)
-{
-    ASSERT(lst != NULL);
-    ASSERT(anch < lst->size + 1 && anch > 0);
-    ListOk(lst);
-
-    if (lst->size < lst->cap / 4)
-        ListRealloc(lst, lst->size, true);
-
-    if (anch != ListGetTail(lst))
-        lst->is_linearized = false;
-
-    int32_t prev_anch = lst->buf[anch].prev,
-            next_anch = lst->buf[anch].next;
-
-    lst->buf[prev_anch].next = next_anch;
-    lst->buf[next_anch].prev = prev_anch;
-
-    lst->buf[anch] = 
-        {
-            .val   = -1,
-            .next  = lst->free,
-            .prev  = -1
-        };
-
-    lst->free = anch;
+    BufferListAdd(lst->free_buf, anch);
 
     --lst->size;
-
-    ListOk(lst);
-    ListLog(lst);
 }
 
-int32_t ListPushBack(List *lst, int32_t val)
+Node* ListPushBack (List *lst, int32_t val)
 {
-    ListInsertBefore(lst, val, ROOT);
+    return ListInsertBefore(lst, val, lst->dummy_head);
 }
 
-int32_t ListPushFront(List *lst, int32_t val)
+Node* ListPushFront(List *lst, int32_t val)
 {
-    ListInsertAfter(lst, val, ROOT);
+    return ListInsertAfter (lst, val, lst->dummy_head);
 }
 
 void ListPopBack(List *lst)
@@ -250,92 +98,21 @@ void ListPopFront(List *lst)
     ListErase(lst, ListGetHead(lst));
 }
 
-int32_t ListGetAnch(List *lst, int32_t ind)
-{
-    ASSERT(ind < lst->size && ind > 0);
-
-    if (lst->is_linearized)
-        return ind;
-
-    int32_t vertex = ROOT;
-    int32_t i      = 0;
-
-    for (int32_t i = 0; i < ind; ++i)
-        vertex = ListGetNext(lst, vertex);
-
-    return vertex;
-}
-
-int32_t ListGetNext(List *lst, int32_t anch)
+Node* ListGetHead(List *lst)
 {
     ASSERT(lst != NULL);
-
-    return lst->buf[anch].next;
+    return lst->dummy_head->next;
 }
 
-int32_t ListGetPrev(List *lst, int32_t anch)
+Node* ListGetTail(List *lst)
 {
     ASSERT(lst != NULL);
-
-    return lst->buf[anch].prev;
+    return lst->dummy_head->prev;
 }
 
-int32_t ListGetHead(List *lst)
+uint32_t ListGetSize(List *lst)
 {
     ASSERT(lst != NULL);
-
-    return ListGetNext(lst, ROOT);
-}
-
-int32_t ListGetTail(List *lst)
-{
-    ASSERT(lst != NULL);
-
-    return ListGetPrev(lst, ROOT);
-}
-
-int32_t ListGetValue(List *lst, int32_t anch)
-{
-    ASSERT(lst != NULL);
-
-    return lst->buf[anch].val;
-}
-
-int32_t ListGetFree(List *lst)
-{
-    ASSERT(lst != NULL);
-
-    return lst->free;
-}
-
-int32_t ListGetSize(List *lst)
-{
-    ASSERT(lst != NULL);
-
     return lst->size;
-}
-
-int32_t ListGetCapacity(List *lst)
-{
-    ASSERT(lst != NULL);
-
-    return lst->cap;
-}
-
-bool ListIsEmptyNode(List *lst, int anch)
-{
-    ASSERT(lst != NULL);
-
-    return lst->buf[anch].prev == -1;
-}
-
-void ListFillStructurePosion(List *lst)
-{
-    ASSERT(lst != NULL);
-    ListOk (lst);
-    ListLog(lst);
-
-    for (int32_t i = 0; i < sizeof(List) / sizeof(int64_t); ++i)
-        *((int64_t*)(lst) + i) = POISON;
 }
 

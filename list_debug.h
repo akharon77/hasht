@@ -33,18 +33,13 @@ do                                                                           \
 }                                                                            \
 while(0)
 
-const double   POISIONED_PERC         = 0.7;
-
-const uint32_t ERROR_SIZE_NEG         = 1 << 0;
-const uint32_t ERROR_BUF_BAD_PTR      = 1 << 1;
-const uint32_t ERROR_COMM_VIOL        = 1 << 2;
-const uint32_t ERROR_ELEMS            = 1 << 3;
-const uint32_t ERROR_FREE_INCORR      = 1 << 4;
-const uint32_t ERROR_FREE_VIOL        = 1 << 5;
-const uint32_t ERROR_CAP_NEG          = 1 << 6;
-const uint32_t ERROR_SIZE_MISMATCH    = 1 << 7;
-const uint32_t ERROR_CAP_MISMATCH     = 1 << 8;
-const uint32_t ERROR_POISIONED_STRUCT = 1 << 9;
+struct DebugInfo
+{
+    int32_t     line;
+    const char *name;
+    const char *funcname;
+    const char *filename;
+};
 
 extern const char * const COLOR_NODE_EMPTY;
 extern const char * const COLOR_NODE_FILLED;
@@ -56,36 +51,46 @@ extern const char * const COLOR_EDGE_NEXT;
 extern const char * const COLOR_EDGE_PREV;
 extern const char * const COLOR_EDGE_EMPTY;
 
-const int32_t  DUMP_NODE_HEAD = 2147483645;
-const int32_t  DUMP_NODE_TAIL = 2147483646;
-const int32_t  DUMP_NODE_FREE = 2147483647;
+extern const int32_t EDGE_BASE_WEIGHT;
+ 
+extern const uint32_t ERROR_SIZE_NEG;
+extern const uint32_t ERROR_BUF_BAD_PTR;
+extern const uint32_t ERROR_COMM_VIOL;
+extern const uint32_t ERROR_ELEMS;
+extern const uint32_t ERROR_FREE_INCORR;
+extern const uint32_t ERROR_FREE_VIOL;
+extern const uint32_t ERROR_CAP_NEG;
+extern const uint32_t ERROR_SIZE_MISMATCH;
+extern const uint32_t ERROR_CAP_MISMATCH;
+extern const uint32_t ERROR_POISIONED_STRUCT;
 
-const int64_t  POISON         = 0xDEADBEEF1451DE1ll;
+extern const int32_t  DUMP_NODE_HEAD;
+extern const int32_t  DUMP_NODE_TAIL;
+extern const int32_t  DUMP_NODE_FREE;
+ 
+extern const uint64_t POISON;
+extern const double   POISIONED_PERC;
 
-int32_t     ListGetLogFd            ();
-void        ListLog                 (List *lst);
-void        ListLogInit             ();
-void        ListLogClose            ();
-void        ListPrint               (List *lst);
-
-uint32_t    ListStatus              (List *lst);
-const char* ListErrorDesc           (uint32_t flags);
-
-void        ListDump                (List *lst, int32_t fd_dump);
-void        ListDumpGraph           (List *lst, int32_t fd_dump);
-
-void        ListDumpGraphInfoNode   (int anch, const char *name, const char *fillcolor, int32_t fd_dump);
-
-void        ListDumpGraphNode       (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
-
-void        ListDumpGraphNodeRecord (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
-void        ListDumpGraphNodeEdges  (List *lst, int anch, int32_t fd_dump);
-
-void        ListDumpGraphEdge       (int anch1, int anch2, const char *color, int32_t weight, int32_t fd_dump);
-
-bool        isBadPtr                (void *ptr);
-int32_t     min                     (int32_t a, int32_t b);
-int32_t     max                     (int32_t a, int32_t b);
+// void        ListPrint               (List *lst);
+// 
+// uint32_t    ListStatus              (List *lst);
+// const char* ListErrorDesc           (uint32_t flags);
+// 
+// void        ListDump                (List *lst, int32_t fd_dump);
+// void        ListDumpGraph           (List *lst, int32_t fd_dump);
+// 
+// void        ListDumpGraphInfoNode   (int anch, const char *name, const char *fillcolor, int32_t fd_dump);
+// 
+// void        ListDumpGraphNode       (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
+// 
+// void        ListDumpGraphNodeRecord (List *lst, int anch, const char *fillcolor, int32_t fd_dump);
+// void        ListDumpGraphNodeEdges  (List *lst, int anch, int32_t fd_dump);
+// 
+// void        ListDumpGraphEdge       (int anch1, int anch2, const char *color, int32_t weight, int32_t fd_dump);
+// 
+// bool        isBadPtr                (void *ptr);
+// int32_t     min                     (int32_t a, int32_t b);
+// int32_t     max                     (int32_t a, int32_t b);
 
 #endif  // LIST_DEBUG_H
 

@@ -3,34 +3,14 @@
 
 #include <stdint.h>
 
-struct DebugInfo
-{
-    int32_t     line;
-    const char *name;
-    const char *funcname;
-    const char *filename;
-};
-
-struct Node
-{
-    int32_t val;
-
-    int32_t next;
-    int32_t prev;
-};
+#include "buf_list_struct.h"
 
 struct List
 {
-    int32_t   size;
-    int32_t   cap;
+    uint32_t   size;
 
-    Node     *buf;
-
-    int32_t   free;
-
-    bool      is_linearized; 
-
-    DebugInfo info;
+    Node       *dummy_head;
+    BufferList *free_buf;
 };
 
 #endif  // LIST_STRUCT_H
