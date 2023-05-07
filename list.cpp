@@ -18,7 +18,7 @@ void ListCtor(List       *lst,
 
     *dummy_head =
         {
-            .val  = -1,
+            .val  = NULL,
             .next = dummy_head,
             .prev = dummy_head
         };
@@ -37,7 +37,7 @@ void ListDtor(List *lst)
 
     *lst->dummy_head =
         {
-            .val = -1,
+            .val  = NULL,
             .next = NULL,
             .prev = NULL
         };
@@ -47,7 +47,7 @@ void ListDtor(List *lst)
     lst->size = 0;
 }
 
-Node* ListInsertBefore(List *lst, int32_t val, Node *anch)
+Node* ListInsertBefore(List *lst, const char *val, Node *anch)
 {
     ASSERT(lst  != NULL);
     ASSERT(anch != NULL);
@@ -71,7 +71,7 @@ Node* ListInsertBefore(List *lst, int32_t val, Node *anch)
     return npos;
 }
 
-Node* ListInsertAfter(List *lst, int32_t val, Node *anch)
+Node* ListInsertAfter(List *lst, const char *val, Node *anch)
 {
     return ListInsertBefore(lst, val, anch->next);
 }
@@ -92,12 +92,12 @@ void ListErase(List *lst, Node *anch)
     --lst->size;
 }
 
-Node* ListPushBack (List *lst, int32_t val)
+Node* ListPushBack (List *lst, const char *val)
 {
     return ListInsertBefore(lst, val, lst->dummy_head);
 }
 
-Node* ListPushFront(List *lst, int32_t val)
+Node* ListPushFront(List *lst, const char *val)
 {
     return ListInsertAfter (lst, val, lst->dummy_head);
 }

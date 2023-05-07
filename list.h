@@ -13,12 +13,12 @@ void        ListCtor                (List       *lst,
 
 void        ListDtor                (List *lst);
 
-Node*       ListInsertBefore        (List *lst, int32_t val, Node *anch);
-Node*       ListInsertAfter         (List *lst, int32_t val, Node *anch);
+Node*       ListInsertBefore        (List *lst, const char *val, Node *anch);
+Node*       ListInsertAfter         (List *lst, const char *val, Node *anch);
 void        ListErase               (List *lst, Node *anch);
 
-Node*       ListPushBack            (List *lst, int32_t val);
-Node*       ListPushFront           (List *lst, int32_t val);
+Node*       ListPushBack            (List *lst, const char *val);
+Node*       ListPushFront           (List *lst, const char *val);
 
 void        ListPopBack             (List *lst);
 void        ListPopFront            (List *lst);

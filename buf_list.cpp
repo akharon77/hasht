@@ -26,7 +26,7 @@ void BufferListCtor(BufferList *lst, uint32_t size)
     for (Node *anch = lst->buf; ind < size; ++ind, ++anch)
         *anch = 
             {
-                .val  = -1,
+                .val  = NULL,
                 .next = anch + 1,
                 .prev = NULL
             };
@@ -72,7 +72,7 @@ void BufferListRealloc(BufferList *lst, uint32_t new_cap)
     for (Node *anch = new_buf + lst->size; ind < new_cap; ++ind, ++anch)
         *anch = 
             {
-                .val  = -1,
+                .val  = NULL,
                 .next = anch + 1,
                 .prev = NULL
             };

@@ -5,10 +5,10 @@
 
 struct Node
 {
-    int32_t val;
+    const char *val;
 
-    Node* next;
-    Node* prev;
+    Node *next;
+    Node *prev;
 };
 
 #endif  // NODE_STRUCT_H
