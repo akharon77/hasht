@@ -3,7 +3,7 @@
 #include "hasht.h"
 #include "iostr.h"
 
-const uint32_t LAB_SIZE = 19;
+const uint32_t LAB_SIZE = 277;
 
 uint32_t constHash(const char *str)
 {

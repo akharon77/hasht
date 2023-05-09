@@ -2,6 +2,8 @@
 #define GENERAL_H
 
 #define ASSERT(expr)                                        \
+ON_DEBUG                                                    \
+(                                                           \
 do {                                                        \
     if (!(expr))                                            \
         fprintf(stderr,                                     \
@@ -10,9 +12,10 @@ do {                                                        \
                 "Function: %s\n",                           \
                 __FILE__, __LINE__,                         \
                 __PRETTY_FUNCTION__);                       \
-} while(0)
+} while(0)                                                  \
+)
 
-#ifdef DEBUG
+#ifdef _DEBUG
     #define ON_DEBUG(...) __VA_ARGS__
 #else
     #define ON_DEBUG(...)

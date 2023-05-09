@@ -73,8 +73,8 @@ void TextInfoInputFromFile(TextInfo *text, const char *filename, int *err)
 
     RET_ERR(fileCont == NULL, err, FILE_CONTENT_MALLOC_ERROR);
 
-    uint64_t n_read = read(fd, fileCont, fileSize);
-    RET_ERR(n_read < (uint64_t) fileSize, err, FILE_READING_ERROR);
+    int64_t n_read = read(fd, fileCont, fileSize);
+    RET_ERR(n_read < fileSize, err, FILE_READING_ERROR);
 
     text->size = fileSize + 1;
     text->base = fileCont;
@@ -117,7 +117,6 @@ void TextInfoMarkout(TextInfo *text, int32_t *err)
     TextInfoPrepare(text);
     text->words = (const char**) calloc(text->words_cnt, sizeof(const char*));
 
-    bool is_word = false;
     for (uint32_t i = 0, j = 0; i < text->size; ++i)
     {
         if (text->base[i] == '\0')
@@ -142,3 +141,4 @@ void InitErrorTags()
     for (int i = 0; i < N_ERRORS; ++i)
         ERRORS[ERROR_TAGS[i].errorId] = ERROR_TAGS[i].description;
 }
+

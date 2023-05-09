@@ -1,9 +1,8 @@
 #ifndef HASHT_STRUCT_H
 #define HASHT_STRUCT_H
 
+#include "hash_functions.h"
 #include "list.h"
-
-typedef uint32_t (*HashFunction)(const char *str);
 
 struct HashTable
 {
