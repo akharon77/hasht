@@ -68,18 +68,18 @@ void TextInfoInputFromFile(TextInfo *text, const char *filename, int *err)
     struct stat fileStatBuf = {};
     RET_ERR(fstat(fd, &fileStatBuf) != 0, err, FILE_STATS_READING_ERROR);
 
-    uint32_t  fileSize = (uint32_t) fileStatBuf.st_size + 1;
-    char     *fileCont = (char*)  calloc(fileSize, sizeof(char));
+    uint32_t  fileSize = (uint32_t) fileStatBuf.st_size;
+    char     *fileCont = (char*)  calloc(fileSize + 1, sizeof(char));
 
     RET_ERR(fileCont == NULL, err, FILE_CONTENT_MALLOC_ERROR);
 
     uint64_t n_read = read(fd, fileCont, fileSize);
     RET_ERR(n_read < (uint64_t) fileSize, err, FILE_READING_ERROR);
 
-    text->size = fileSize;
+    text->size = fileSize + 1;
     text->base = fileCont;
 
-    text->base[text->size - 1] = '\0';
+    text->base[fileSize] = '\0';
 
     close(fd);
 }

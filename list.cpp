@@ -17,7 +17,7 @@ void ListCtor(List *lst, BufferList *free_buf)
     lst->free_buf   = free_buf;
     lst->dummy_head = BufferListPop(free_buf);
 
-    *lst->dummy_head =
+    lst->free_buf->buf[lst->dummy_head] =
         {
             .val  = NULL,
             .next = lst->dummy_head,
@@ -33,69 +33,61 @@ void ListDtor(List *lst)
 
     BufferListDtor(lst->free_buf);
 
-    *lst->dummy_head =
-        {
-            .val  = NULL,
-            .next = NULL,
-            .prev = NULL
-        };
-
     lst->free_buf   = NULL;
-    lst->dummy_head = NULL;
-    lst->size = 0;
+    lst->dummy_head = -1;
+    lst->size       =  0;
 }
 
-Node* ListInsertBefore(List *lst, const char *val, Node *anch)
+int32_t ListInsertBefore(List *lst, const char *val, int32_t anch)
 {
-    ASSERT(lst  != NULL);
-    ASSERT(anch != NULL);
+    ASSERT(lst != NULL);
+    ASSERT(val != NULL);
 
-    Node *npos = BufferListPop(lst->free_buf);
+    int32_t npos = BufferListPop(lst->free_buf);
 
-    Node *anch_prev = anch->prev;
+    int32_t anch_prev = lst->free_buf->buf[anch].prev;
 
-    *npos = 
+    lst->free_buf->buf[npos] = 
         {
             .val  = val,
             .next = anch,
             .prev = anch_prev
         };
 
-    anch_prev->next = npos;
-    anch     ->prev = npos;
+    lst->free_buf->buf[anch_prev].next = npos;
+    lst->free_buf->buf[anch     ].prev = npos;
     
     ++lst->size;
 
     return npos;
 }
 
-Node* ListInsertAfter(List *lst, const char *val, Node *anch)
+int32_t ListInsertAfter(List *lst, const char *val, int32_t anch)
 {
-    return ListInsertBefore(lst, val, anch->next);
+    return ListInsertBefore(lst, val, lst->free_buf->buf[anch].next);
 }
 
-void ListErase(List *lst, Node *anch)
+void ListErase(List *lst, int32_t anch)
 {
     ASSERT(lst  != NULL);
-    ASSERT(anch != NULL);
 
-    Node *prev_anch = anch->prev,
-         *next_anch = anch->next;
+    int32_t prev_anch = lst->free_buf->buf[anch].prev,
+            next_anch = lst->free_buf->buf[anch].next;
 
-    prev_anch->next = next_anch;
-    next_anch->prev = prev_anch;
+    lst->free_buf->buf[prev_anch].next = next_anch;
+    lst->free_buf->buf[next_anch].prev = prev_anch;
 
     BufferListAdd(lst->free_buf, anch);
 
     --lst->size;
 }
 
-Node* ListPushBack (List *lst, const char *val)
+int32_t ListPushBack (List *lst, const char *val)
 {
     return ListInsertBefore(lst, val, lst->dummy_head);
 }
 
-Node* ListPushFront(List *lst, const char *val)
+int32_t ListPushFront(List *lst, const char *val)
 {
     return ListInsertAfter (lst, val, lst->dummy_head);
 }
@@ -110,16 +102,16 @@ void ListPopFront(List *lst)
     ListErase(lst, ListGetHead(lst));
 }
 
-Node* ListGetHead(List *lst)
+int32_t ListGetHead(List *lst)
 {
     ASSERT(lst != NULL);
-    return lst->dummy_head->next;
+    return lst->free_buf->buf[lst->dummy_head].next;
 }
 
-Node* ListGetTail(List *lst)
+int32_t ListGetTail(List *lst)
 {
     ASSERT(lst != NULL);
-    return lst->dummy_head->prev;
+    return lst->free_buf->buf[lst->dummy_head].prev;
 }
 
 uint32_t ListGetSize(List *lst)

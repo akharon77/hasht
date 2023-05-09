@@ -10,8 +10,7 @@ struct BufferList
     uint32_t size;
     uint32_t cap;
 
-    Node    *head;
-    Node    *tail;
+    int32_t  head;
     Node    *buf;
 };
 

@@ -9,7 +9,7 @@ struct List
 {
     uint32_t   size;
 
-    Node       *dummy_head;
+    int32_t     dummy_head;
     BufferList *free_buf;
 };
 

@@ -1,6 +1,7 @@
 #include <stdint.h>
 
 #include "hasht.h"
+#include "iostr.h"
 
 const uint32_t LAB_SIZE = 19;
 
@@ -22,25 +23,22 @@ int main()
     HashTable hasht = {};
     HashTableCtor(&hasht, LAB_SIZE, constHash);
 
-    const char *arr[] = 
-        {
-            "abba",
-            "abaga",
-            "acc",
-            "abba",
-            "acca",
-            "lol"
-        };
+    TextInfo text = {};
+    TextInfoCtor(&text);
 
-    for (uint32_t i = 0; i < sizeof(arr) / sizeof(const char*); ++i)
-        HashTableInsert(&hasht, arr[i]);
+    int32_t err = 0;
+    TextInfoInputFromFile(&text, "hamlet.txt", &err);
+
+    TextInfoMarkout(&text, &err);
+    for (uint32_t i = 0; i < text.words_cnt; ++i)
+        HashTableInsert(&hasht, text.words[i]);
 
     for (uint32_t i = 0; i < hasht.size; ++i)
     {
-        printf("List %d\n", i);
-        ListPrint(hasht.lists + i);
+        printf("List %u size: %u\n", i, hasht.lists[i].size);
     }
 
-    HashTableDtor(&hasht);
+    HashTableDtor (&hasht);
+    TextInfoDtor  (&text);
     return 0;
 }

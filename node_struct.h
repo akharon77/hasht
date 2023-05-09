@@ -7,8 +7,8 @@ struct Node
 {
     const char *val;
 
-    Node *next;
-    Node *prev;
+    int32_t next;
+    int32_t prev;
 };
 
 #endif  // NODE_STRUCT_H

@@ -40,13 +40,13 @@ void ListPrint(List *lst)
 {
     ASSERT(lst != NULL);
 
-    Node *node = ListGetHead(lst);
+    int32_t node = ListGetHead(lst);
     for (uint32_t i = 0; i < lst->size; ++i)
     {
-        dprintf(2, "anch = %p, val = %s\n", 
-                    node, node->val);
+        dprintf(2, "anch = %d, val = %s\n", 
+                    node, lst->free_buf->buf[node].val);
 
-        node = node->next;
+        node = lst->free_buf->buf[node].next;
     }
 
     printf("\n");
@@ -156,92 +156,92 @@ void ListPrint(List *lst)
 // 
 // }
 
-void ListDumpGraph(List *lst, int32_t fd_dump)
-{
-    const char *fd_dump_graph_filename = "./dump/.list_dump_graph.txt";
-    static int32_t cnt = 0;
-
-    int32_t fd_dump_graph = creat(fd_dump_graph_filename, S_IRWXU);
-
-    dprintf(fd_dump_graph, "digraph G{\nsplines=ortho;\nranksep=1;\noverlap=voronoi;\n");
-    dprintf(fd_dump_graph, "{rank=min;\n");
-    // ListDumpGraphInfoNode (DUMP_NODE_HEAD, "head", COLOR_NODE_INFO_HEAD, fd_dump_graph);
-    // ListDumpGraphInfoNode (DUMP_NODE_TAIL, "tail", COLOR_NODE_INFO_TAIL, fd_dump_graph);
-    // ListDumpGraphInfoNode (DUMP_NODE_FREE, "free", COLOR_NODE_EMPTY,     fd_dump_graph);
-    dprintf(fd_dump_graph, "}\n");
-
-    dprintf(fd_dump_graph, "{rank=same;\n");
-    // ListDumpGraphNodeRecord(lst, 0, COLOR_NODE_ROOT, fd_dump_graph);
-
-    Node *node = lst->dummy_head;
-    for (uint32_t i = 0; i < lst->size + 1; ++i)
-    {
-        ListDumpGraphNodeRecord(lst, node, COLOR_NODE_FILLED, fd_dump_graph);
-        node = node->next;
-    }
-
-    dprintf(fd_dump_graph, "}\n");
-
-    node = lst->dummy_head;
-    for (uint32_t i = 0; i < lst->size + 1; ++i)
-    {
-        ListDumpGraphEdge(node, node->next, "#00000000", EDGE_BASE_WEIGHT, fd_dump_graph);
-        node = node->next;
-    }
-    
-    // ListDumpGraphEdge(DUMP_NODE_HEAD, ListGetHead(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
-    // ListDumpGraphEdge(DUMP_NODE_TAIL, ListGetTail(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
-    // ListDumpGraphEdge(DUMP_NODE_FREE, ListGetFree(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
-
-    // dprintf(fd_dump_graph, "{rank=max;nodemax[style=invis];} node0->nodemax[color=\"#00000000\"];");
-    dprintf(fd_dump_graph, "}\n");
-
-    close(fd_dump_graph);
-
-    char cmd[256] = "";
-    sprintf(cmd, "dot %s -o ./dump/list_graph%d.svg -Tsvg", 
-                 fd_dump_graph_filename, cnt);
-    system(cmd);
-
-    dprintf(fd_dump, "<img src=\"list_graph%d.svg\" height = 300>\n",
-                     cnt);
-
-    ++cnt;
-}
-
-void ListDumpGraphInfoNode(Node *anch, const char *name, const char *fillcolor, int32_t fd_dump)
-{
-    dprintf(fd_dump, "node%p[shape=invhouse, style=\"filled\", fillcolor=\"%s\", label = \"%s\"];\n",
-            anch, fillcolor, name);
-}
-
-void ListDumpGraphNode(List *lst, Node *anch, const char *fillcolor, int32_t fd_dump)
-{
-    ListDumpGraphNodeRecord (lst, anch, fillcolor, fd_dump);
-    ListDumpGraphNodeEdges  (lst, anch, fd_dump);
-}
-
-void ListDumpGraphNodeRecord(List *lst, Node *anch, const char *fillcolor, int32_t fd_dump)
-{
-    dprintf(fd_dump, "node%p[shape=record, style=\"filled\", fillcolor=\"%s\", label ="
-                      "\"{ind: %p | val: %s | {prev: %p | next: %p}}\"," 
-                      "width=2, height=1, fixedsize=true];\n", 
-            anch, fillcolor, anch, anch->val, anch->prev, anch->next);
-}
-
-void ListDumpGraphNodeEdges(List *lst, Node *anch, int32_t fd_dump)
-{
-    ListDumpGraphEdge(anch, anch->next, COLOR_EDGE_NEXT, 0, fd_dump);
-    ListDumpGraphEdge(anch, anch->prev, COLOR_EDGE_PREV, 0, fd_dump);
-}
-
-void ListDumpGraphEdge(Node *anch1, Node *anch2, const char *color, int32_t weight, int32_t fd_dump)
-{
-    if (anch1 != NULL && anch2 != NULL)
-        dprintf(fd_dump, "node%p->node%p[color=\"%s\", weight=%d, penwidth=3, minlen=3];\n",
-                anch1, anch2, color, weight);
-}
-
+// void ListDumpGraph(List *lst, int32_t fd_dump)
+// {
+//     const char *fd_dump_graph_filename = "./dump/.list_dump_graph.txt";
+//     static int32_t cnt = 0;
+// 
+//     int32_t fd_dump_graph = creat(fd_dump_graph_filename, S_IRWXU);
+// 
+//     dprintf(fd_dump_graph, "digraph G{\nsplines=ortho;\nranksep=1;\noverlap=voronoi;\n");
+//     dprintf(fd_dump_graph, "{rank=min;\n");
+//     // ListDumpGraphInfoNode (DUMP_NODE_HEAD, "head", COLOR_NODE_INFO_HEAD, fd_dump_graph);
+//     // ListDumpGraphInfoNode (DUMP_NODE_TAIL, "tail", COLOR_NODE_INFO_TAIL, fd_dump_graph);
+//     // ListDumpGraphInfoNode (DUMP_NODE_FREE, "free", COLOR_NODE_EMPTY,     fd_dump_graph);
+//     dprintf(fd_dump_graph, "}\n");
+// 
+//     dprintf(fd_dump_graph, "{rank=same;\n");
+//     // ListDumpGraphNodeRecord(lst, 0, COLOR_NODE_ROOT, fd_dump_graph);
+// 
+//     Node *node = lst->dummy_head;
+//     for (uint32_t i = 0; i < lst->size + 1; ++i)
+//     {
+//         ListDumpGraphNodeRecord(lst, node, COLOR_NODE_FILLED, fd_dump_graph);
+//         node = node->next;
+//     }
+// 
+//     dprintf(fd_dump_graph, "}\n");
+// 
+//     node = lst->dummy_head;
+//     for (uint32_t i = 0; i < lst->size + 1; ++i)
+//     {
+//         ListDumpGraphEdge(node, node->next, "#00000000", EDGE_BASE_WEIGHT, fd_dump_graph);
+//         node = node->next;
+//     }
+//     
+//     // ListDumpGraphEdge(DUMP_NODE_HEAD, ListGetHead(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
+//     // ListDumpGraphEdge(DUMP_NODE_TAIL, ListGetTail(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
+//     // ListDumpGraphEdge(DUMP_NODE_FREE, ListGetFree(lst), COLOR_EDGE_NEXT, 0, fd_dump_graph);
+// 
+//     // dprintf(fd_dump_graph, "{rank=max;nodemax[style=invis];} node0->nodemax[color=\"#00000000\"];");
+//     dprintf(fd_dump_graph, "}\n");
+// 
+//     close(fd_dump_graph);
+// 
+//     char cmd[256] = "";
+//     sprintf(cmd, "dot %s -o ./dump/list_graph%d.svg -Tsvg", 
+//                  fd_dump_graph_filename, cnt);
+//     system(cmd);
+// 
+//     dprintf(fd_dump, "<img src=\"list_graph%d.svg\" height = 300>\n",
+//                      cnt);
+// 
+//     ++cnt;
+// }
+// 
+// void ListDumpGraphInfoNode(int32_t anch, const char *name, const char *fillcolor, int32_t fd_dump)
+// {
+//     dprintf(fd_dump, "node%p[shape=invhouse, style=\"filled\", fillcolor=\"%s\", label = \"%s\"];\n",
+//             anch, fillcolor, name);
+// }
+// 
+// void ListDumpGraphNode(List *lst, int32_t anch, const char *fillcolor, int32_t fd_dump)
+// {
+//     ListDumpGraphNodeRecord (lst, anch, fillcolor, fd_dump);
+//     ListDumpGraphNodeEdges  (lst, anch, fd_dump);
+// }
+// 
+// void ListDumpGraphNodeRecord(List *lst, int32_t anch, const char *fillcolor, int32_t fd_dump)
+// {
+//     dprintf(fd_dump, "node%p[shape=record, style=\"filled\", fillcolor=\"%s\", label ="
+//                       "{ind: %p | val: %s | {prev: %p | next: %p}}\"," 
+//                       "width=2, height=1, fixedsize=true];\n", 
+//             anch, fillcolor, anch, anch->val, anch->prev, anch->next);
+// }
+// 
+// void ListDumpGraphNodeEdges(List *lst, int32_t anch, int32_t fd_dump)
+// {
+//     ListDumpGraphEdge(anch, anch->next, COLOR_EDGE_NEXT, 0, fd_dump);
+//     ListDumpGraphEdge(anch, anch->prev, COLOR_EDGE_PREV, 0, fd_dump);
+// }
+// 
+// void ListDumpGraphEdge(int32_t anch1, int32_t anch2, const char *color, int32_t weight, int32_t fd_dump)
+// {
+//     if (anch1 != NULL && anch2 != NULL)
+//         dprintf(fd_dump, "node%p->node%p[color=\"%s\", weight=%d, penwidth=3, minlen=3];\n",
+//                 anch1, anch2, color, weight);
+// }
+// 
 // int32_t min(int32_t a, int32_t b)
 // {
 //     if (a < b)

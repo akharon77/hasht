@@ -45,28 +45,31 @@ void HashTableInsert(HashTable *hasht, const char *str)
     ASSERT(str   != NULL);
 
     uint32_t  ind = 0;
-    Node     *res = HashTableFind(hasht, str, &ind);
+    int32_t res = HashTableFind(hasht, str, &ind);
 
     if (!res)
         ListPushBack(hasht->lists + ind, str);
 }
 
-Node* HashTableFind(const HashTable *hasht, const char *str, uint32_t *ind)
+int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
 {
     ASSERT(hasht != NULL);
     ASSERT(str   != NULL);
+    ASSERT(ind   != NULL);
 
     uint32_t  hash_val = hasht->hash_fun(str);
              *ind      = hash_val % hasht->size;
 
-    Node *head = ListGetHead(hasht->lists + *ind);
+    List *lst = hasht->lists + *ind;
 
-    for (uint32_t i = 0; i < hasht->lists[*ind].size; ++i)
+    int32_t head = ListGetHead(lst);
+
+    for (uint32_t i = 0; i < lst->size; ++i)
     {
-        if (strcmp(str, head->val) == 0)
+        if (strcmp(str, lst->free_buf->buf[head].val) == 0)
             return head;
 
-        head = head->next;
+        head = lst->free_buf->buf[head].next;
     }
 
     return NULL;

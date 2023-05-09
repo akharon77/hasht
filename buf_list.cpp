@@ -9,30 +9,28 @@
 #include "general.h"
 #include "list_debug.h"
 
-void BufferListCtor(BufferList *lst, uint32_t size)
+void BufferListCtor(BufferList *lst, uint32_t cap)
 {
     ASSERT(lst  != NULL);
 
-    lst->size = size;
-    lst->cap  = size;
+    lst->size = cap;
+    lst->cap  = cap;
 
-    lst->buf  = (Node*) calloc(size, sizeof(Node));
+    lst->buf  = (Node*) calloc(cap, sizeof(Node));
 
     ASSERT(lst->buf != NULL);
 
-    lst->head = lst->buf;
-    lst->tail = lst->buf + size - 1;
+    lst->head = 0;
 
-    uint32_t ind = 0;
-    for (Node *anch = lst->buf; ind < size; ++ind, ++anch)
-        *anch = 
+    for (uint32_t ind = 0; ind < cap; ++ind)
+        lst->buf[ind] = 
             {
                 .val  = NULL,
-                .next = anch + 1,
-                .prev = NULL
+                .next = ind + 1,
+                .prev = -1
             };
 
-    lst->tail->next = NULL;
+    lst->buf[cap - 1].next = -1;
 }
 
 void BufferListDtor(BufferList *lst)
@@ -46,13 +44,12 @@ void BufferListDtor(BufferList *lst)
     lst->cap  = 0;
 }
 
-void BufferListAdd(BufferList *lst, Node *anch)
+void BufferListAdd(BufferList *lst, int32_t anch)
 {
     ASSERT(lst  != NULL);
-    ASSERT(anch != NULL);
 
-    anch->next = lst->head;
-     lst->head = anch;
+    lst->buf[anch].next = lst->head;
+    lst->head           = anch;
 
     ++lst->size;
 }
@@ -64,36 +61,39 @@ void BufferListRealloc(BufferList *lst, uint32_t new_cap)
     Node *new_buf = (Node*) realloc(lst->buf, new_cap * sizeof(Node));
 
     ASSERT(new_buf != NULL);
+    lst->buf = new_buf;
     
-    uint32_t ind = lst->size;
+    uint32_t ind = lst->cap;
 
-    lst->tail->next = new_buf + ind;
-    lst->tail       = new_buf + new_cap - 1;
+    lst->buf[lst->cap - 1].next = ind;
 
-    for (Node *anch = new_buf + lst->size; ind < new_cap; ++ind, ++anch)
-        *anch = 
+    while (ind < new_cap)
+    {
+        lst->buf[ind] = 
             {
                 .val  = NULL,
-                .next = anch + 1,
-                .prev = NULL
+                .next = ind + 1,
+                .prev = -1 
             };
 
-    lst->tail->next = NULL;
+        ++ind;
+    }
 
-    lst->buf   = new_buf;
+    lst->buf[new_cap - 1].next = -1;
+
     lst->size += new_cap - lst->cap;
     lst->cap   = new_cap;
 }
 
-Node* BufferListPop(BufferList *lst)
+int32_t BufferListPop(BufferList *lst)
 {
     ASSERT(lst != NULL);
 
     if (lst->size == 1)
         BufferListRealloc(lst, lst->cap * 2);
 
-    Node *res = lst->head;
-    lst->head = lst->head->next;
+    int32_t res = lst->head;
+    lst->head = lst->buf[lst->head].next;
 
     --lst->size;
 
