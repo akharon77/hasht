@@ -18,5 +18,8 @@ int main()
     HashTableLenTestFast(&test, rotl);
     HashTableLenTestFast(&test, crc32);
 
+    HashTableLenTestDtor(&test);
+    HashTableDtor(&hasht);
+
     return 0;
 }

@@ -14,5 +14,5 @@ do for [hash_fun in "const first_char strlen sum_char rotr rotl crc32"] {
 
     set output output_filename
 
-    plot input_filename using 2 title 'hash\_' . hash_fun
+    plot input_filename using 2 title 'hash_' . hash_fun noenhanced linetype rgbcolor "royalblue"
 }
