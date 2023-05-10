@@ -22,15 +22,7 @@ void BufferListCtor(BufferList *lst, uint32_t cap)
 
     lst->head = 0;
 
-    for (uint32_t ind = 0; ind < cap; ++ind)
-        lst->buf[ind] = 
-            {
-                .val  = NULL,
-                .next = ind + 1,
-                .prev = -1
-            };
-
-    lst->buf[cap - 1].next = -1;
+    BufferListClear(lst);
 }
 
 void BufferListDtor(BufferList *lst)
@@ -98,5 +90,20 @@ int32_t BufferListPop(BufferList *lst)
     --lst->size;
 
     return res;
+}
+
+void BufferListClear(BufferList *lst)
+{
+    uint32_t cap = lst->cap;
+
+    for (uint32_t ind = 0; ind < cap; ++ind)
+        lst->buf[ind] = 
+            {
+                .val  = NULL,
+                .next = ind + 1,
+                .prev = -1
+            };
+
+    lst->buf[cap - 1].next = -1;
 }
 

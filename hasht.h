@@ -10,5 +10,7 @@ void    HashTableInsert (HashTable *hasht, const char *str);
 
 int32_t HashTableFind   (HashTable *hasht, const char *str, uint32_t *ind);
 
+void    HashTableClear  (HashTable *hasht);
+
 #endif  // HASHT_H
 

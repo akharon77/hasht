@@ -3,6 +3,11 @@
 #include "general.h"
 #include "hash_functions.h"
 
+uint32_t hash_vice(const char *str)
+{
+    return 0 / 0;
+}
+
 uint32_t hash_const(const char *str)
 {
     ASSERT(str != NULL);

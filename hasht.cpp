@@ -4,12 +4,12 @@
 #include "hasht.h"
 #include "general.h"
 
-const int32_t EXP_ELEMS_BY_LIST = 3;
+static const int32_t EXP_ELEMS_BY_LIST = 3;
 
 void HashTableCtor(HashTable *hasht, uint32_t size, HashFunction hash_fun)
 {
-    ASSERT(hasht    != NULL);
-    ASSERT(hash_fun != NULL);
+    ASSERT (hasht    != NULL);
+    ASSERT (hash_fun != NULL);
 
     hasht->size = size;
 
@@ -41,11 +41,11 @@ void HashTableDtor(HashTable *hasht)
 
 void HashTableInsert(HashTable *hasht, const char *str)
 {
-    ASSERT(hasht != NULL);
-    ASSERT(str   != NULL);
+    ASSERT (hasht != NULL);
+    ASSERT (str   != NULL);
 
-    uint32_t  ind = 0;
-    int32_t res = HashTableFind(hasht, str, &ind);
+    uint32_t ind = 0;
+    int32_t  res = HashTableFind(hasht, str, &ind);
 
     if (!res)
         ListPushBack(hasht->lists + ind, str);
@@ -53,12 +53,14 @@ void HashTableInsert(HashTable *hasht, const char *str)
 
 int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
 {
-    ASSERT(hasht != NULL);
-    ASSERT(str   != NULL);
-    ASSERT(ind   != NULL);
+    ASSERT (hasht != NULL);
+    ASSERT (str   != NULL);
+    ASSERT (ind   != NULL);
 
     uint32_t  hash_val = hasht->hash_fun(str);
              *ind      = hash_val % hasht->size;
+
+    ASSERT(0 <= *ind && *ind < hasht->size);
 
     List *lst = hasht->lists + *ind;
 
@@ -73,5 +75,13 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
     }
 
     return NULL;
+}
+
+void HashTableClear(HashTable *hasht)
+{
+    BufferListClear(&hasht->free_buf);
+
+    for (uint32_t i = 0; i < hasht->size; ++i)
+        ListCtor(hasht->lists + i, &hasht->free_buf);
 }
 

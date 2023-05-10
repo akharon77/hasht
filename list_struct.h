@@ -7,7 +7,7 @@
 
 struct List
 {
-    uint32_t   size;
+    uint32_t    size;
 
     int32_t     dummy_head;
     BufferList *free_buf;

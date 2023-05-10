@@ -13,5 +13,7 @@ int32_t BufferListPop     (BufferList *lst);
 
 void    BufferListRealloc (BufferList *lst, uint32_t new_cap);
 
+void    BufferListClear   (BufferList *lst);
+
 #endif  // BUF_LIST_H
 

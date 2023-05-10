@@ -5,6 +5,7 @@
 
 typedef uint32_t (*HashFunction)(const char *str);
 
+uint32_t hash_vice       (const char *str);
 uint32_t hash_const      (const char *str);
 uint32_t hash_first_char (const char *str);
 uint32_t hash_strlen     (const char *str);
