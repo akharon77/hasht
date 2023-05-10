@@ -1,9 +1,11 @@
+#include <fcntl.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "general.h"
 #include "test_len.h"
 
-void HashTableTestCtor(HashTableLenTest *test, HashTable *hasht, const char *input_filename)
+void HashTableLenTestCtor(HashTableLenTest *test, HashTable *hasht, const char *input_filename)
 {
     ASSERT (test  != NULL);
     ASSERT (hasht != NULL);
@@ -26,7 +28,7 @@ void HashTableTestCtor(HashTableLenTest *test, HashTable *hasht, const char *inp
     ASSERT(err == 0);
 }
 
-void HashTableTestDtor(HashTableLenTest *test)
+void HashTableLenTestDtor(HashTableLenTest *test)
 {
     ASSERT(test  != NULL);
 
@@ -41,7 +43,7 @@ void HashTableTestDtor(HashTableLenTest *test)
     TextInfoDtor(&test->text);
 }
 
-void HashTableTestExec_(HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name)
+void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name)
 {
     ASSERT (test          != NULL);
     ASSERT (hash_fun      != NULL);
@@ -60,7 +62,7 @@ void HashTableTestExec_(HashTableLenTest *test, HashFunction hash_fun, const cha
     HashTableClear(test->hasht);
 }
 
-void HashTableTestSaveResults(HashTableLenTest *test)
+void HashTableLenTestSaveResults(HashTableLenTest *test)
 {
     ASSERT(test != NULL);
 
@@ -70,10 +72,10 @@ void HashTableTestSaveResults(HashTableLenTest *test)
     strcpy(output_filename, test->hash_fun_name);
     strcat(output_filename, ".dat");
 
-    int32_t fd = creat(test->hash_fun_name, output_filename);
+    int32_t fd = creat(output_filename, S_IRWXU);
     ASSERT(fd != -1);
 
-    dprintf(fd, "# id len");
+    dprintf(fd, "#%10s %10s\n", "id", "len");
     for (uint32_t i = 0; i < test->hasht->size; ++i)
         dprintf(fd, "%10u %10u\n", i, test->result[i]);
 

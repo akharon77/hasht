@@ -17,13 +17,20 @@ struct HashTableLenTest
     uint32_t   *result;
 };
 
-#define HashTableTestExec(test, hash_fun) HashTableTestExec_(test, hash_fun, #hash_fun)
+#define HashTableLenTestExec(test, hash_fun) HashTableLenTestExec_(test, hash_fun, #hash_fun)
+#define HashTableLenTestFast(test, fun_name)      \
+do                                                \
+{                                                 \
+    HashTableLenTestExec(test, hash_ ## fun_name); \
+    HashTableLenTestSaveResults(test);            \
+}                                                 \
+while (0)
 
-void HashTableTestCtor  (HashTableLenTest *test, HashTable *hasht, const char *input_filename);
-void HashTableTestDtor  (HashTableLenTest *test);
+void HashTableLenTestCtor  (HashTableLenTest *test, HashTable *hasht, const char *input_filename);
+void HashTableLenTestDtor  (HashTableLenTest *test);
 
-void HashTableTestExec_ (HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name);
+void HashTableLenTestExec_ (HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name);
 
-void HashTableTestSaveResults (HashTableLenTest *test);
+void HashTableLenTestSaveResults (HashTableLenTest *test);
 
 #endif  // TEST_LEN_H

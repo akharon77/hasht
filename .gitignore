@@ -1,10 +1,12 @@
 dump/
+*.dat
 *.o
 *.out
 *.d
 *.dd
 *.log
 *.ii
+*.png
 vgcore*
 *.bin
 .*.*
