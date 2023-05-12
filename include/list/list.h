@@ -3,9 +3,9 @@
 
 #include <stdint.h>
 
-#include "buf_list.h"
-#include "list_debug.h"
-#include "list_struct.h"
+#include "list/buf_list.h"
+#include "list/list_debug.h"
+#include "list/list_struct.h"
 
 void        ListCtor         (List *lst, BufferList *free_buf);
 void        ListDtor         (List *lst);

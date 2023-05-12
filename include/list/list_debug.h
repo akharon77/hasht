@@ -2,7 +2,7 @@
 #define LIST_DEBUG_H
 
 #include <stdio.h>
-#include "list_struct.h"
+#include "list/list_struct.h"
 
 #define ListOk(lst)                                                          \
 do                                                                           \

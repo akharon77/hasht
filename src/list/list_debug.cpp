@@ -3,8 +3,8 @@
 #include <unistd.h>
 
 #include "general.h"
-#include "list.h"
-#include "list_debug.h"
+#include "list/list.h"
+#include "list/list_debug.h"
 
 const char* const COLOR_NODE_EMPTY     = "#56B13A";
 const char* const COLOR_NODE_FILLED    = "#C64153";

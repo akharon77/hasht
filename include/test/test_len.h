@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#include "hasht.h"
-#include "iostr.h"
+#include "hasht/hasht.h"
+#include "iostr/iostr.h"
 
 struct HashTableLenTest
 {

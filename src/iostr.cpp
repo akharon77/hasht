@@ -5,9 +5,9 @@
 #include <unistd.h>
 #include <ctype.h>
 
-#include "colors.h"
 #include "general.h"
-#include "iostr.h"
+#include "iostr/colors.h"
+#include "iostr/iostr.h"
 
 const int MAX_LINE_LEN = 256;
 

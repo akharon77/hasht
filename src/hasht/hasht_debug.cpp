@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 #include "general.h"
-#include "hasht_debug.h"
+#include "hasht/hasht_debug.h"
 
 void HashTableDumpLenToFile(HashTable *hasht, const char *filename)
 {

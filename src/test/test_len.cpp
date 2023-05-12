@@ -3,7 +3,7 @@
 #include <string.h>
 
 #include "general.h"
-#include "test_len.h"
+#include "test/test_len.h"
 
 void HashTableLenTestCtor(HashTableLenTest *test, HashTable *hasht, const char *input_filename)
 {

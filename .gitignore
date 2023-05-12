@@ -1,6 +1,5 @@
 dump/
-bin/
-dep/
+build/
 
 *.o
 *.out

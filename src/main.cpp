@@ -1,6 +1,8 @@
-#include "test_len.h"
+#include "test/test_len.h"
 
 const uint32_t LAB_SIZE = 331;
+
+#define TEXTS_DIR "assets/data/"
 
 int main()
 {
@@ -8,7 +10,7 @@ int main()
     HashTableCtor(&hasht, LAB_SIZE, hash_vice);
 
     HashTableLenTest test = {};
-    HashTableLenTestCtor(&test, &hasht, "hamlet.txt");
+    HashTableLenTestCtor(&test, &hasht, TEXTS_DIR "hamlet.txt");
 
     HashTableLenTestFast(&test, const);
     HashTableLenTestFast(&test, first_char);

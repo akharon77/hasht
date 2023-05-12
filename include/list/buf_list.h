@@ -3,7 +3,7 @@
 
 #include <unistd.h>
 
-#include "buf_list_struct.h"
+#include "list/buf_list_struct.h"
 
 void    BufferListCtor    (BufferList *lst, uint32_t cap);
 void    BufferListDtor    (BufferList *lst);

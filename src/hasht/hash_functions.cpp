@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "general.h"
-#include "hash_functions.h"
+#include "hasht/hash_functions.h"
 
 uint32_t hash_vice(const char *str)
 {

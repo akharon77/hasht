@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "node_struct.h"
+#include "list/node_struct.h"
 
 struct BufferList
 {

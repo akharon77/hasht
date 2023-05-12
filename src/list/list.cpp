@@ -5,9 +5,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#include "buf_list.h"
 #include "general.h"
-#include "list.h"
+#include "list/buf_list.h"
+#include "list/list.h"
 
 void ListCtor(List *lst, BufferList *free_buf)
 {

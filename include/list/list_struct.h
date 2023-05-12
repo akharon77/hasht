@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "buf_list_struct.h"
+#include "list/buf_list_struct.h"
 
 struct List
 {

@@ -1,8 +1,8 @@
 #ifndef HASHT_STRUCT_H
 #define HASHT_STRUCT_H
 
-#include "hash_functions.h"
-#include "list.h"
+#include "hasht/hash_functions.h"
+#include "list/list.h"
 
 struct HashTable
 {

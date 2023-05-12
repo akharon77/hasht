@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "hasht.h"
 #include "general.h"
+#include "hasht/hasht.h"
 
 static const int32_t EXP_ELEMS_BY_LIST = 3;
 

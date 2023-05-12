@@ -5,9 +5,9 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "buf_list.h"
 #include "general.h"
-#include "list_debug.h"
+#include "list/buf_list.h"
+#include "list/list_debug.h"
 
 void BufferListCtor(BufferList *lst, uint32_t cap)
 {
