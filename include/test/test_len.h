@@ -6,6 +6,8 @@
 #include "hasht/hasht.h"
 #include "iostr/iostr.h"
 
+#define BASE_ASSETS_DATA_HASH_FUNS_PATH "assets/data/hash_funs/"
+
 struct HashTableLenTest
 {
     HashTable  *hasht;

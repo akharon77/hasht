@@ -66,10 +66,10 @@ void HashTableLenTestSaveResults(HashTableLenTest *test)
 {
     ASSERT(test != NULL);
 
-    char output_filename[64] = "";
-    ASSERT(strlen(test->hash_fun_name) + sizeof(".dat") < 64);
+    char output_filename[256] = BASE_ASSETS_DATA_HASH_FUNS_PATH;
+    ASSERT(strlen(BASE_ASSETS_DATA_HASH_FUNS_PATH) + strlen(test->hash_fun_name) + sizeof(".dat") < 256);
 
-    strcpy(output_filename, test->hash_fun_name);
+    strcat(output_filename, test->hash_fun_name);
     strcat(output_filename, ".dat");
 
     int32_t fd = creat(output_filename, S_IRWXU);

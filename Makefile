@@ -11,7 +11,7 @@ INCLUDE_DIRS	:= include/
 
 BUILD_DIR		:= build/
 BUILD_DIRS		:= obj/
-BUILD_DIRS		:= $(addprefix $(BUILD_DIR), $(BUILD_DIRS))
+BUILD_DIRS		:= $(BUILD_DIR) $(addprefix $(BUILD_DIR), $(BUILD_DIRS))
 
 OBJ_DIR			:= $(BUILD_DIR)obj/
 
@@ -24,21 +24,21 @@ DEP_FILES 		:= $(SOURCE_FILES:.cpp=.d)
 
 OBJECT_FILES	:= $(patsubst src/%.cpp, $(OBJ_DIR)%.o, $(SOURCE_FILES))
 
-BUILD_LOG		:= build.log
+BUILD_LOG		:= $(BUILD_DIR)build.log
 
 all: $(BUILD_DIRS_DEP) $(PROGRAM_OUT)
 
 $(PROGRAM_OUT): $(OBJECT_FILES)
 	@echo [$(shell date -Iseconds)] Build $@ | tee -a $(BUILD_LOG)
-	@$(CXX) $^ -o $@ $(CXX_FLAGS) 2>$(BUILD_LOG)
+	@$(CXX) $^ -o $@ $(CXX_FLAGS) 2>>$(BUILD_LOG)
 
 $(OBJ_DIR)%.o: $(SOURCE_DIR)%.cpp $(BUILD_DIRS_DEP)
 	@echo [$(shell date -Iseconds)] Compile $< | tee -a $(BUILD_LOG)
-	@$(CXX) $< -c $(CXX_FLAGS) $(addprefix -I, $(INCLUDE_DIRS)) -o $@ -MMD 2>$(BUILD_LOG)
+	@$(CXX) $< -c $(CXX_FLAGS) $(addprefix -I, $(INCLUDE_DIRS)) -o $@ -MMD 2>>$(BUILD_LOG)
 
 %/.dirstamp:
-	@echo [$(shell date -Iseconds)] Make dir $(dir $@) | tee -a $(BUILD_LOG)
 	@mkdir -p $(dir $@) && touch $@
+	@echo [$(shell date -Iseconds)] Make dir $(dir $@) | tee -a $(BUILD_LOG)
 
 sinclude $(DEP_FILES)
 
