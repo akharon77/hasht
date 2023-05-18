@@ -107,3 +107,8 @@ void BufferListClear(BufferList *lst)
     lst->buf[cap - 1].next = -1;
 }
 
+Node* BufferListGet(BufferList *lst, int32_t anch)
+{
+    return lst->buf + anch;
+}
+

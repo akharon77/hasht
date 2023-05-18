@@ -120,3 +120,8 @@ uint32_t ListGetSize(List *lst)
     return lst->size;
 }
 
+Node* ListGet(List *lst, int32_t anch)
+{
+    return BufferListGet(lst->free_buf, anch);
+}
+

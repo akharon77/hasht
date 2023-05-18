@@ -43,11 +43,14 @@ void HashTableLenTestDtor(HashTableLenTest *test)
     TextInfoDtor(&test->text);
 }
 
-void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name)
+void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name, uint32_t size)
 {
     ASSERT (test          != NULL);
     ASSERT (hash_fun      != NULL);
     ASSERT (hash_fun_name != NULL);
+
+    HashTableClear  (test->hasht);
+    HashTableRehash (test->hasht, size);
 
     test->hash_fun_name   = hash_fun_name;
 
@@ -58,16 +61,14 @@ void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const 
 
     for (uint32_t i = 0; i < test->hasht->size; ++i)
         test->result[i] = test->hasht->lists[i].size;
-
-    HashTableClear(test->hasht);
 }
 
 void HashTableLenTestSaveResults(HashTableLenTest *test)
 {
     ASSERT(test != NULL);
 
-    char output_filename[256] = BASE_ASSETS_DATA_HASH_FUNS_PATH;
-    ASSERT(strlen(BASE_ASSETS_DATA_HASH_FUNS_PATH) + strlen(test->hash_fun_name) + sizeof(".dat") < 256);
+    char output_filename[256] = BASE_ASSETS_DATA_LEN_HASH_FUNS_PATH;
+    ASSERT(strlen(BASE_ASSETS_DATA_LEN_HASH_FUNS_PATH) + strlen(test->hash_fun_name) + sizeof(".dat") < 256);
 
     strcat(output_filename, test->hash_fun_name);
     strcat(output_filename, ".dat");

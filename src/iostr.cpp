@@ -25,7 +25,7 @@ ErrorTag ERROR_TAGS[] =
 
 const char* ERRORS[N_ERRORS] = {};
 
-bool GetOptions(int argc, const char *argv[], int optionsInd[], const Option exec_options[], int n_exec_options)
+bool GetOptions(int argc, const char *argv[], int options_ind[], const Option exec_options[], int n_exec_options)
 {
     ASSERT(argv != NULL);
 
@@ -35,10 +35,10 @@ bool GetOptions(int argc, const char *argv[], int optionsInd[], const Option exe
                 strcmp(exec_options[j].strFormShort, argv[i]) == 0)
             {
                 int id = exec_options[j].optionId;
-                if (optionsInd[id])
+                if (options_ind[id])
                     return false;
 
-                optionsInd[id] = i;
+                options_ind[id] = i;
             }
 
     return true;

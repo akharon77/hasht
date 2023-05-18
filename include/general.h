@@ -1,12 +1,17 @@
 #ifndef GENERAL_H
 #define GENERAL_H
 
+// ON_DEBUG
+// (
+// #include <fcntl.h>
+// )
+
 #define ASSERT(expr)                                        \
 ON_DEBUG                                                    \
 (                                                           \
 do {                                                        \
     if (!(expr))                                            \
-        fprintf(stderr,                                     \
+        dprintf(2,                                          \
                 "Assertion failed. Expression: " #expr "\n" \
                 "File: %s, line: %d\n"                      \
                 "Function: %s\n",                           \

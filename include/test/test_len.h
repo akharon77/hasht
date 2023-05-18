@@ -5,8 +5,9 @@
 
 #include "hasht/hasht.h"
 #include "iostr/iostr.h"
+#include "test/config.h"
 
-#define BASE_ASSETS_DATA_HASH_FUNS_PATH "assets/data/hash_funs/"
+#define BASE_ASSETS_DATA_LEN_HASH_FUNS_PATH "assets/data/hash_funs/len/"
 
 struct HashTableLenTest
 {
@@ -19,19 +20,19 @@ struct HashTableLenTest
     uint32_t   *result;
 };
 
-#define HashTableLenTestExec(test, hash_fun) HashTableLenTestExec_(test, hash_fun, #hash_fun)
-#define HashTableLenTestFast(test, fun_name)      \
-do                                                \
-{                                                 \
-    HashTableLenTestExec(test, hash_ ## fun_name); \
-    HashTableLenTestSaveResults(test);            \
-}                                                 \
+#define HashTableLenTestExec(test, hash_fun, size) HashTableLenTestExec_(test, hash_fun, #hash_fun, size)
+#define HashTableLenTestFast(test, fun_name)                \
+do                                                          \
+{                                                           \
+    HashTableLenTestExec(test, hash_ ## fun_name, LAB_CNT); \
+    HashTableLenTestSaveResults(test);                      \
+}                                                           \
 while (0)
 
 void HashTableLenTestCtor  (HashTableLenTest *test, HashTable *hasht, const char *input_filename);
 void HashTableLenTestDtor  (HashTableLenTest *test);
 
-void HashTableLenTestExec_ (HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name);
+void HashTableLenTestExec_ (HashTableLenTest *test, HashFunction hash_fun, const char *hash_fun_name, uint32_t size);
 
 void HashTableLenTestSaveResults (HashTableLenTest *test);
 

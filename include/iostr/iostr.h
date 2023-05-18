@@ -10,7 +10,9 @@ struct Option
 {
     const char *strFormLong,
                *strFormShort;
+
     int         optionId;
+
     const char *description;
 };
 

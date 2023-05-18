@@ -11,7 +11,8 @@ void HashTableCtor(HashTable *hasht, uint32_t size, HashFunction hash_fun)
     ASSERT (hasht    != NULL);
     ASSERT (hash_fun != NULL);
 
-    hasht->size = size;
+    hasht->size      = size;
+    hasht->cnt_elems = 0;
 
     BufferListCtor(&hasht->free_buf, EXP_ELEMS_BY_LIST * size);
 
@@ -37,6 +38,9 @@ void HashTableDtor(HashTable *hasht)
     BufferListDtor(&hasht->free_buf);
 
     hasht->hash_fun = NULL;
+
+    hasht->size      = 0;
+    hasht->cnt_elems = 0;
 }
 
 void HashTableInsert(HashTable *hasht, const char *str)
@@ -47,8 +51,34 @@ void HashTableInsert(HashTable *hasht, const char *str)
     uint32_t ind = 0;
     int32_t  res = HashTableFind(hasht, str, &ind);
 
-    if (!res)
-        ListPushBack(hasht->lists + ind, str);
+    if (res == -1)
+    {
+        ++hasht->cnt_elems;
+        if (hasht->cnt_elems * 3 >= hasht->size * 4)
+        {
+            HashTableRehash(hasht, 2 * hasht->size);
+            HashTableInsert(hasht, str);
+        }
+        else
+        {
+            ListPushBack(hasht->lists + ind, str);
+        }
+    }
+}
+
+void HashTableErase(HashTable *hasht, const char *str)
+{
+    ASSERT (hasht != NULL);
+    ASSERT (str   != NULL);
+
+    uint32_t ind = 0;
+    int32_t  res = HashTableFind(hasht, str, &ind);
+
+    if (res != -1)
+    {
+        --hasht->cnt_elems;
+        ListErase(hasht->lists + ind, res);
+    }
 }
 
 int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
@@ -74,7 +104,7 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
         head = lst->free_buf->buf[head].next;
     }
 
-    return NULL;
+    return -1;
 }
 
 void HashTableClear(HashTable *hasht)
@@ -83,5 +113,40 @@ void HashTableClear(HashTable *hasht)
 
     for (uint32_t i = 0; i < hasht->size; ++i)
         ListCtor(hasht->lists + i, &hasht->free_buf);
+}
+
+void HashTableRehash(HashTable *hasht, uint32_t size)
+{
+    ASSERT(size > hasht->size);
+
+    uint32_t prev_hasht_size = hasht->size;
+    hasht->size = size;
+
+    hasht->lists = (List*) realloc(hasht->lists, sizeof(List) * size);
+    ASSERT(hasht->lists != NULL);
+
+    for (uint32_t i = prev_hasht_size; i < size; ++i)
+        ListCtor(hasht->lists + i, &hasht->free_buf);
+
+    uint32_t *len_sizes = (uint32_t*) calloc(prev_hasht_size, sizeof(uint32_t));
+    ASSERT(len_sizes != NULL);
+
+    for (uint32_t i = 0; i < prev_hasht_size; ++i)
+        len_sizes[i] = hasht->lists[i].size;
+
+    for (uint32_t i = 0; i < prev_hasht_size; ++i)
+    {
+        List     *lst = hasht->lists + i;
+        uint32_t  k   = len_sizes[i];
+
+        while (k--)
+        {
+            const char *val = ListGet(lst, ListGetHead(lst))->val;
+
+            --hasht->cnt_elems;
+            ListPopFront(lst);
+            HashTableInsert(hasht, val);
+        }
+    }
 }
 

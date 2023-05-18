@@ -7,6 +7,7 @@
 struct HashTable
 {
     uint32_t      size;
+    uint32_t      cnt_elems;
 
     List         *lists;
     BufferList    free_buf;
