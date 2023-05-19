@@ -7,8 +7,6 @@
 #include "iostr/iostr.h"
 #include "test/config.h"
 
-#define BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH "assets/data/hash_funs/speed/"
-
 struct HashTableSpeedTest
 {
     HashTable  *hasht;
@@ -21,15 +19,12 @@ struct HashTableSpeedTest
 };
 
 #define HashTableSpeedTestExec(test, hash_fun, cnt) HashTableSpeedTestExec_(test, hash_fun, #hash_fun, cnt)
-#define HashTableSpeedTestFast(test, fun_name)                      \
-do                                                                  \
-{                                                                   \
-    for (uint32_t i = 0; i < LAB_AVG; ++i)                          \
-    {                                                               \
-        HashTableSpeedTestExec(test, hash_ ## fun_name, LAB_CNT);   \
-        HashTableSpeedTestSaveResults(test);                        \
-    }                                                               \
-}                                                                   \
+#define HashTableSpeedTestFast(test, fun_name)                  \
+do                                                              \
+{                                                               \
+    HashTableSpeedTestExec(test, hash_ ## fun_name, LAB_CNT);   \
+    HashTableSpeedTestSaveResults(test);                        \
+}                                                               \
 while (0)
 
 void HashTableSpeedTestCtor  (HashTableSpeedTest *test, HashTable *hasht, const char *input_filename);

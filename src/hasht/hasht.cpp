@@ -1,10 +1,21 @@
+#include <immintrin.h>
+#include <nmmintrin.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "general.h"
 #include "hasht/hasht.h"
+#include "test/config.h"
 
-static const int32_t EXP_ELEMS_BY_LIST = 3;
+static const int32_t  EXP_ELEMS_BY_LIST = 3;
+
+#ifdef _MEASURE
+static const uint32_t P_COEFF = 13;
+#else
+static const uint32_t P_COEFF = 4;
+#endif  // _MEASURE
+
+static const uint32_t Q_COEFF = 3;
 
 void HashTableCtor(HashTable *hasht, uint32_t size, HashFunction hash_fun)
 {
@@ -55,7 +66,7 @@ void HashTableInsert(HashTable *hasht, const char *str)
     {
         ++hasht->cnt_elems;
 #ifdef _SPEED_TEST
-        if (hasht->cnt_elems * 3 >= hasht->size * 13)
+        if (hasht->cnt_elems * Q_COEFF >= hasht->size * P_COEFF)
         {
             HashTableRehash(hasht, 2 * hasht->size);
             HashTableInsert(hasht, str);
@@ -91,6 +102,10 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
     ASSERT (str   != NULL);
     ASSERT (ind   != NULL);
 
+#if OPT_LVL > 1
+    __m256i str_cpy = _mm256_load_si256((const __m256i*) str);
+#endif  // OPT_LVL > 1
+
     uint32_t  hash_val = hasht->hash_fun(str);
              *ind      = hash_val % hasht->size;
 
@@ -102,8 +117,16 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
 
     for (uint32_t i = 0; i < lst->size; ++i)
     {
+#if OPT_LVL > 1
+        __m256i str_lst = _mm256_load_si256((const __m256i*) lst->free_buf->buf[head].val);
+
+        bool cmp_res = _mm256_cmpeq_epi8_mask(str_cpy, str_lst);
+        if (cmp_res)
+            return head;
+#else
         if (strcmp(str, lst->free_buf->buf[head].val) == 0)
             return head;
+#endif  // OPT_LVL > 1
 
         head = lst->free_buf->buf[head].next;
     }

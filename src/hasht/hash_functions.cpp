@@ -3,6 +3,7 @@
 
 #include "general.h"
 #include "hasht/hash_functions.h"
+#include "test/config.h"
 
 uint32_t hash_vice(const char *str)
 {
@@ -106,25 +107,32 @@ uint32_t hash_crc32(const char *str)
         crc = crc_lookup_table[((uint8_t) crc ^ *str++)] ^ (crc >> 8);
 
     return ~crc;
-#endif  // OPT_LEVEL == 0
-
-#if OPT_LVL == 1
+#else
     uint32_t hash  = 0;
-    uint32_t len   = strlen(str);
+    #if OPT_LVL > 1
+        for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
+        {
+            hash = _mm_crc32_u64(hash, *(uint64_t*) str);
+            str += 64 / 8;
+        }
+    #else
+        #if OPT_LVL > 0
+            uint32_t len   = strlen(str);
 
-    uint32_t full  = len / sizeof(uint16_t);
-    uint32_t mod   = len % sizeof(uint16_t);
+            uint32_t full  = len / sizeof(uint16_t);
+            uint32_t mod   = len % sizeof(uint16_t);
 
-    for (uint32_t i = 0; i < full; i++) 
-    {
-		hash = _mm_crc32_u16(hash, *(uint16_t*) str);
-        str += sizeof(uint16_t);
-    }
+            for (uint32_t i = 0; i < full; i++) 
+            {
+                hash = _mm_crc32_u16(hash, *(uint16_t*) str);
+                str += sizeof(uint16_t);
+            }
 
-    for (uint32_t i = 0; i < mod; ++i)
-        hash = _mm_crc32_u8(hash, *str++);
-    
+            for (uint32_t i = 0; i < mod; ++i)
+                hash = _mm_crc32_u8(hash, *str++);
+        #endif  // OPT_LEVEL >  0
+    #endif  // OPT_LEVEL >  1
     return hash;
-#endif  // OPT_LEVEL == 1
+#endif  // OPT_LEVEL == 0
 }
 

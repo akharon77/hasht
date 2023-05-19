@@ -4,10 +4,10 @@
 const uint32_t LAB_SIZE = 330;
 const uint32_t LAB_CNT  = 1000000;
 const uint32_t LAB_SEED = 13;
-#ifdef _MEASURE
-const uint32_t LAB_AVG  = 300;
-#else
-const uint32_t LAB_AVG  = 1;
-#endif  // _MEASURE
+
+const uint32_t USE_CASE_MAX_WORD_LEN = 256 / 8;
+
+#define BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH "assets/data/hash_funs/speed/"
+#define BASE_ASSETS_DATA_LEN_HASH_FUNS_PATH "assets/data/hash_funs/len/"
 
 #endif  // CONFIG_LAB_H

@@ -8,6 +8,7 @@
 #include "general.h"
 #include "iostr/colors.h"
 #include "iostr/iostr.h"
+#include "test/config.h"
 
 const int MAX_LINE_LEN = 256;
 
@@ -125,6 +126,27 @@ void TextInfoMarkout(TextInfo *text, int32_t *err)
         if (isalpha(text->base[i]) && text->words[j] == NULL)
             text->words[j] = text->base + i;
     }
+}
+
+void TextInfoOptimize(TextInfo *text)
+{
+    ASSERT(text != NULL);
+
+    char *new_base = (char*) aligned_alloc(32, text->words_cnt * USE_CASE_MAX_WORD_LEN);
+    // char *new_base = (char*) calloc(text->words_cnt, USE_CASE_MAX_WORD_LEN);
+    ASSERT(new_base != NULL);
+
+    char *ptr = new_base;
+    for (uint32_t i = 0; i < text->words_cnt; ++i)
+    {
+        strcpy(ptr, text->words[i]);
+        text->words[i] = ptr;
+        ptr += USE_CASE_MAX_WORD_LEN;
+    }
+
+    free(text->base);
+    text->base = new_base;
+    text->size = USE_CASE_MAX_WORD_LEN;
 }
 
 void TextInfoDtor(TextInfo *text)

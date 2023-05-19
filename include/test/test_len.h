@@ -7,8 +7,6 @@
 #include "iostr/iostr.h"
 #include "test/config.h"
 
-#define BASE_ASSETS_DATA_LEN_HASH_FUNS_PATH "assets/data/hash_funs/len/"
-
 struct HashTableLenTest
 {
     HashTable  *hasht;
