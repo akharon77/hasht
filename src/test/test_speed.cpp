@@ -60,6 +60,7 @@ void HashTableSpeedTestExec_(HashTableSpeedTest *test, HashFunction hash_fun, co
 
     clock_t begin = clock();
 
+    srand(LAB_SEED);
     uint32_t ind = 0;
     for (uint32_t i = 0; i < cnt; ++i)
     {
@@ -70,6 +71,9 @@ void HashTableSpeedTestExec_(HashTableSpeedTest *test, HashFunction hash_fun, co
     clock_t end = clock();
 
     test->result = (double) (end - begin) / CLOCKS_PER_SEC;
+
+    // for (uint32_t i = 0; i < test->hasht->size; ++i)
+    //     printf("%5u,\n", test->hasht->lists[i].size);
 }
 
 void HashTableSpeedTestSaveResults(HashTableSpeedTest *test)
@@ -77,10 +81,9 @@ void HashTableSpeedTestSaveResults(HashTableSpeedTest *test)
     ASSERT(test != NULL);
 
     char output_filename[256] = BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH;
-    ASSERT(strlen(BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH) + strlen(test->hash_fun_name) + sizeof(".csv") < 256);
+    ASSERT(strlen(BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH) + strlen(test->hash_fun_name) + strlen(STR_OPT_LVL) + sizeof(".csv") < 256);
 
-    strcat(output_filename, test->hash_fun_name);
-    strcat(output_filename, ".csv");
+    sprintf(output_filename, "%s%s_opt_%d.csv", BASE_ASSETS_DATA_SPEED_HASH_FUNS_PATH, test->hash_fun_name, OPT_LVL);
 
     int32_t fd = open(output_filename, O_RDWR | O_CREAT | O_APPEND, S_IRWXU);
     ASSERT(fd != -1);

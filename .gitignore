@@ -3,6 +3,9 @@ build/
 
 *.o
 *.out
+callgrind*
+*.csv
+*.xlsx
 
 *.d
 *.dd

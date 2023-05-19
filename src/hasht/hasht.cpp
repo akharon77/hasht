@@ -54,7 +54,8 @@ void HashTableInsert(HashTable *hasht, const char *str)
     if (res == -1)
     {
         ++hasht->cnt_elems;
-        if (hasht->cnt_elems * 3 >= hasht->size * 4)
+#ifdef _SPEED_TEST
+        if (hasht->cnt_elems * 3 >= hasht->size * 13)
         {
             HashTableRehash(hasht, 2 * hasht->size);
             HashTableInsert(hasht, str);
@@ -63,6 +64,9 @@ void HashTableInsert(HashTable *hasht, const char *str)
         {
             ListPushBack(hasht->lists + ind, str);
         }
+#else
+        ListPushBack(hasht->lists + ind, str);
+#endif  // _SPEED_TEST
     }
 }
 

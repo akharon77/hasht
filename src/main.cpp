@@ -24,7 +24,7 @@ int main(int argc, const char *argv[])
 #else
 #ifdef _SPEED_TEST
     HashTableSpeedTest test = {};
-    HashTableSpeedTestCtor(&test, &hasht, TEXTS_DIR "hamlet.txt");
+    HashTableSpeedTestCtor(&test, &hasht, TEXTS_DIR "words.txt");
 
     HashTableSpeedTestFast(&test, crc32);
 

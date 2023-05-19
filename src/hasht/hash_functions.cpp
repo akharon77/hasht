@@ -1,4 +1,5 @@
 #include <string.h>
+#include <nmmintrin.h>
 
 #include "general.h"
 #include "hasht/hash_functions.h"
@@ -61,6 +62,8 @@ uint32_t hash_rotl(const char *str)
 
 uint32_t hash_crc32(const char *str)
 {
+    ASSERT(str != NULL);
+#if OPT_LVL == 0
     static const uint32_t crc_lookup_table[256] =
     {
         0x00000000, 0xF26B8303, 0xE13B70F7, 0x1350F3F4, 0xC79A971F, 0x35F1141C, 0x26A1E7E8, 0xD4CA64EB, 
@@ -103,5 +106,25 @@ uint32_t hash_crc32(const char *str)
         crc = crc_lookup_table[((uint8_t) crc ^ *str++)] ^ (crc >> 8);
 
     return ~crc;
+#endif  // OPT_LEVEL == 0
+
+#if OPT_LVL == 1
+    uint32_t hash  = 0;
+    uint32_t len   = strlen(str);
+
+    uint32_t full  = len / sizeof(uint16_t);
+    uint32_t mod   = len % sizeof(uint16_t);
+
+    for (uint32_t i = 0; i < full; i++) 
+    {
+		hash = _mm_crc32_u16(hash, *(uint16_t*) str);
+        str += sizeof(uint16_t);
+    }
+
+    for (uint32_t i = 0; i < mod; ++i)
+        hash = _mm_crc32_u8(hash, *str++);
+    
+    return hash;
+#endif  // OPT_LEVEL == 1
 }
 
