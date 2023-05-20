@@ -102,11 +102,11 @@ void ListPopFront(List *lst)
     ListErase(lst, ListGetHead(lst));
 }
 
-int32_t ListGetHead(List *lst)
-{
-    ASSERT(lst != NULL);
-    return lst->free_buf->buf[lst->dummy_head].next;
-}
+// int32_t ListGetHead(List *lst)
+// {
+//     ASSERT(lst != NULL);
+//     return lst->free_buf->buf[lst->dummy_head].next;
+// }
 
 int32_t ListGetTail(List *lst)
 {
