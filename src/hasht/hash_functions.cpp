@@ -65,7 +65,7 @@ uint32_t hash_rotl(const char *str)
 uint32_t hash_crc32(const char *str)
 {
     ASSERT(str != NULL);
-#if OPT_LVL == 0
+#if OPT_LVL == 0 || OPT_LVL == 1
     static const uint32_t crc_lookup_table[256] =
     {
         0x00000000, 0xF26B8303, 0xE13B70F7, 0x1350F3F4, 0xC79A971F, 0x35F1141C, 0x26A1E7E8, 0xD4CA64EB, 
@@ -110,16 +110,16 @@ uint32_t hash_crc32(const char *str)
     return ~crc;
 #else
     uint32_t hash  = 0;
-    #if OPT_LVL == 1 || OPT_LVL == 3
-        #if OPT_LVL == 3
+    #if OPT_LVL == 3
+        // #if OPT_LVL == 3
             __m256i zeros  = _mm256_setzero_si256();
             __m256i str_mm = _mm256_load_si256((const __m256i*) str);
             __m256i equal  = _mm256_cmpeq_epi8(zeros, str_mm);
             int32_t mask   = _mm256_movemask_epi8(equal);
             uint32_t len   = _lzcnt_u32(*(uint32_t*) (&mask));
-        #else
-            uint32_t len   = strlen(str);
-        #endif  // OPT_LVL >= 3
+        // #else
+        //     uint32_t len   = strlen(str);
+        // #endif  // OPT_LVL >= 3
 
         uint32_t full_64  = len /  sizeof(uint64_t);
                             len %= sizeof(uint64_t);
@@ -158,7 +158,7 @@ uint32_t hash_crc32(const char *str)
             hash = _mm_crc32_u64(hash, *(uint64_t*) str);
             str += sizeof(uint64_t);
         }
-    #endif  // OPT_LEVEL == 1
+    #endif  // OPT_LEVEL == 3
     return hash;
 #endif  // OPT_LEVEL == 0
 }
