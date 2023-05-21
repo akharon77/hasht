@@ -23,15 +23,18 @@ void        ListPopFront     (List *lst);
 
 uint32_t    ListGetSize      (List *lst);
 
+int32_t     ListGetTail      (List *lst);
+
+inline Node* ListGet(List *lst, int32_t anch)
+{
+    return BufferListGet(lst->free_buf, anch);
+}
+     
 inline int32_t ListGetHead(List *lst)
 {
     ASSERT(lst != NULL);
     return lst->free_buf->buf[lst->dummy_head].next;
 }
 
-int32_t     ListGetTail      (List *lst);
-
-Node*       ListGet          (List *lst, int32_t anch);
-     
 #endif  // LIST_H
  

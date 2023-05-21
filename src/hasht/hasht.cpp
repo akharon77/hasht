@@ -102,9 +102,9 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
     ASSERT (str   != NULL);
     ASSERT (ind   != NULL);
 
-#if OPT_LVL > 1
+#if OPT_LVL >= 1
     __m256i str_cpy = _mm256_load_si256((const __m256i*) str);
-#endif  // OPT_LVL > 1
+#endif  // OPT_LVL >= 1
 
     uint32_t  hash_val = hasht->hash_fun(str);
              *ind      = hash_val % hasht->size;
@@ -113,22 +113,22 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
 
     List *lst = hasht->lists + *ind;
 
-    int32_t head = ListGetHead(lst);
+    int32_t curr_node = ListGetHead(lst);
 
     for (uint32_t i = 0; i < lst->size; ++i)
     {
-#if OPT_LVL > 1
-        __m256i str_lst = _mm256_load_si256((const __m256i*) lst->free_buf->buf[head].val);
+#if OPT_LVL >= 1
+        __m256i str_lst = _mm256_load_si256((const __m256i*) ListGet(lst, curr_node)->val);
 
         bool cmp_res = _mm256_cmpeq_epi8_mask(str_cpy, str_lst);
         if (cmp_res)
-            return head;
+            return curr_node;
 #else
-        if (strcmp(str, lst->free_buf->buf[head].val) == 0)
-            return head;
-#endif  // OPT_LVL > 1
+        if (strcmp(str, ListGet(lst, curr_node)->val) == 0)
+            return curr_node;
+#endif  // OPT_LVL >= 1
 
-        head = lst->free_buf->buf[head].next;
+        curr_node = ListGet(lst, curr_node)->next;
     }
 
     return -1;

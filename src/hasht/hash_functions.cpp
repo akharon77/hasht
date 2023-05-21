@@ -1,4 +1,5 @@
 #include <string.h>
+#include <immintrin.h>
 #include <nmmintrin.h>
 
 #include "general.h"
@@ -109,29 +110,55 @@ uint32_t hash_crc32(const char *str)
     return ~crc;
 #else
     uint32_t hash  = 0;
-    #if OPT_LVL > 1
+    #if OPT_LVL == 1 || OPT_LVL == 3
+        #if OPT_LVL == 3
+            __m256i zeros  = _mm256_setzero_si256();
+            __m256i str_mm = _mm256_load_si256((const __m256i*) str);
+            __m256i equal  = _mm256_cmpeq_epi8(zeros, str_mm);
+            int32_t mask   = _mm256_movemask_epi8(equal);
+            uint32_t len   = _lzcnt_u32(*(uint32_t*) (&mask));
+        #else
+            uint32_t len   = strlen(str);
+        #endif  // OPT_LVL >= 3
+
+        uint32_t full_64  = len /  sizeof(uint64_t);
+                            len %= sizeof(uint64_t);
+
+        uint32_t full_32  = len /  sizeof(uint32_t);
+                            len %= sizeof(uint32_t);
+
+        uint32_t full_16  = len /  sizeof(uint16_t);
+                            len %= sizeof(uint16_t);
+
+        for (uint32_t i = 0; i < full_64; i++) 
+        {
+            hash = _mm_crc32_u64(hash, *(uint64_t*) str);
+            str += sizeof(uint64_t);
+        }
+        for (uint32_t i = 0; i < full_32; i++) 
+        {
+            hash = _mm_crc32_u32(hash, *(uint32_t*) str);
+            str += sizeof(uint32_t);
+        }
+
+        for (uint32_t i = 0; i < full_16; i++) 
+        {
+            hash = _mm_crc32_u16(hash, *(uint16_t*) str);
+            str += sizeof(uint16_t);
+        }
+
+        for (uint32_t i = 0; i < len; i++) 
+        {
+            hash = _mm_crc32_u8(hash, *(uint8_t*) str);
+            ++str;
+        }
+    #else
         for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
         {
             hash = _mm_crc32_u64(hash, *(uint64_t*) str);
-            str += 64 / 8;
+            str += sizeof(uint64_t);
         }
-    #else
-        #if OPT_LVL > 0
-            uint32_t len   = strlen(str);
-
-            uint32_t full  = len / sizeof(uint16_t);
-            uint32_t mod   = len % sizeof(uint16_t);
-
-            for (uint32_t i = 0; i < full; i++) 
-            {
-                hash = _mm_crc32_u16(hash, *(uint16_t*) str);
-                str += sizeof(uint16_t);
-            }
-
-            for (uint32_t i = 0; i < mod; ++i)
-                hash = _mm_crc32_u8(hash, *str++);
-        #endif  // OPT_LEVEL >  0
-    #endif  // OPT_LEVEL >  1
+    #endif  // OPT_LEVEL == 1
     return hash;
 #endif  // OPT_LEVEL == 0
 }

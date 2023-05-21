@@ -29,9 +29,9 @@ void HashTableSpeedTestCtor(HashTableSpeedTest *test, HashTable *hasht, const ch
     TextInfoMarkout(&test->text, &err);
     ASSERT(err == 0);
 
-#if OPT_LVL > 1
+#if OPT_LVL >= 1
     TextInfoOptimize(&test->text);
-#endif  // OPT_LVL > 1
+#endif  // OPT_LVL >= 1
 }
 
 void HashTableSpeedTestDtor(HashTableSpeedTest *test)
