@@ -62,6 +62,7 @@ uint32_t hash_rotl(const char *str)
     return res;
 }
 
+#if OPT_LVL != 5
 uint32_t hash_crc32(const char *str)
 {
     ASSERT(str != NULL);
@@ -109,8 +110,8 @@ uint32_t hash_crc32(const char *str)
 
     return ~crc;
 #else
-    uint32_t hash  = 0;
-    #if OPT_LVL == 3
+    #if OPT_LVL == 4
+        uint32_t hash  = 0;
         // #if OPT_LVL == 3
             __m256i zeros  = _mm256_setzero_si256();
             __m256i str_mm = _mm256_load_si256((const __m256i*) str);
@@ -152,14 +153,31 @@ uint32_t hash_crc32(const char *str)
             hash = _mm_crc32_u8(hash, *(uint8_t*) str);
             ++str;
         }
+
+        return hash;
     #else
-        for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
-        {
-            hash = _mm_crc32_u64(hash, *(uint64_t*) str);
-            str += sizeof(uint64_t);
-        }
-    #endif  // OPT_LEVEL == 3
-    return hash;
+        uint32_t hash = 0;
+        #if OPT_LVL == 2
+            for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
+            {
+                hash = _mm_crc32_u64(hash, *(uint64_t*) str);
+                str += sizeof(uint64_t);
+            }
+        #else
+            asm
+            (
+                ".intel_syntax noprefix\n\t"
+                "xor     %0, %0\n\t"
+                "crc32   %0, dword ptr [%1]\n\t"
+                "crc32   %0, dword ptr [%1 + 4]\n\t"
+                "crc32   %0, dword ptr [%1 + 8]\n\t"
+                "crc32   %0, dword ptr [%1 + 12]\n\t"
+                :"=r"(hash)          
+                :"r"(str)
+            );
+        #endif  // OPT_LVL == 2
+        return hash;
+    #endif  // OPT_LEVEL == 4
 #endif  // OPT_LEVEL == 0
 }
-
+#endif  // OPT_LVL != 5

@@ -120,8 +120,8 @@ int32_t HashTableFind(HashTable *hasht, const char *str, uint32_t *ind)
 #if OPT_LVL >= 1
         __m256i str_lst = _mm256_load_si256((const __m256i*) ListGet(lst, curr_node)->val);
 
-        bool cmp_res = _mm256_cmpeq_epi8_mask(str_cpy, str_lst);
-        if (cmp_res)
+        uint16_t cmp_res = _mm256_cmpeq_epi8_mask(str_cpy, str_lst);
+        if (!(~cmp_res))
             return curr_node;
 #else
         if (strcmp(str, ListGet(lst, curr_node)->val) == 0)
