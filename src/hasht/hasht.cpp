@@ -149,11 +149,15 @@ void HashTableRehash(HashTable *hasht, uint32_t size)
     uint32_t prev_hasht_size = hasht->size;
     hasht->size = size;
 
-    hasht->lists = (List*) realloc(hasht->lists, sizeof(List) * size);
     ASSERT(hasht->lists != NULL);
 
-    for (uint32_t i = prev_hasht_size; i < size; ++i)
-        ListCtor(hasht->lists + i, &hasht->free_buf);
+    if (prev_hasht_size < size)
+    {
+        hasht->lists = (List*) realloc(hasht->lists, sizeof(List) * size);
+
+        for (uint32_t i = prev_hasht_size; i < size; ++i)
+            ListCtor(hasht->lists + i, &hasht->free_buf);
+    }
 
     uint32_t *len_sizes = (uint32_t*) calloc(prev_hasht_size, sizeof(uint32_t));
     ASSERT(len_sizes != NULL);
@@ -174,6 +178,14 @@ void HashTableRehash(HashTable *hasht, uint32_t size)
             ListPopFront(lst);
             HashTableInsert(hasht, val);
         }
+    }
+
+    if (prev_hasht_size > size)
+    {
+        for (uint32_t i = prev_hasht_size; i < size; ++i)
+            ListDtor(hasht->lists + i);
+
+        hasht->lists = (List*) realloc(hasht->lists, sizeof(List) * size);
     }
 }
 

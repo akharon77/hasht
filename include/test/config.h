@@ -1,9 +1,11 @@
 #ifndef CONFIG_LAB_H
 #define CONFIG_LAB_H
 
-const uint32_t LAB_SIZE = 330;
-const uint32_t LAB_CNT  = 20'000'000;
-const uint32_t LAB_SEED = 13;
+const uint32_t LAB_SIZE1 = 523;
+const uint32_t LAB_SIZE2 = 977;
+
+const uint32_t LAB_CNT   = 20'000'000;
+const uint32_t LAB_SEED  = 13;
 
 const uint32_t USE_CASE_MAX_WORD_LEN = 256 / 8;
 
