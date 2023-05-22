@@ -1,4 +1,6 @@
 #include <fcntl.h>
+#include <immintrin.h>
+#include <nmmintrin.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -136,10 +138,19 @@ void TextInfoOptimize(TextInfo *text)
     // char *new_base = (char*) calloc(text->words_cnt, USE_CASE_MAX_WORD_LEN);
     ASSERT(new_base != NULL);
 
+    char buf_str[32] = "";
+
     char *ptr = new_base;
+
     for (uint32_t i = 0; i < text->words_cnt; ++i)
     {
         strcpy(ptr, text->words[i]);
+
+        // for (uint32_t j = 0; j < 32 / 2; ++j)
+        //     ptr[j] = ptr[32 - j];
+
+        // _mm256_store_si256((__m256i*) ptr, _mm256_loadu_si256((const __m256i*) buf_str));
+
         text->words[i] = ptr;
         ptr += USE_CASE_MAX_WORD_LEN;
     }

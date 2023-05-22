@@ -12,10 +12,10 @@ uint32_t hash_strlen     (const char *str);
 uint32_t hash_sum_char   (const char *str);
 uint32_t hash_rotr       (const char *str);
 uint32_t hash_rotl       (const char *str);
-#if OPT_LVL != 5
+#if OPT_LVL != 2
 uint32_t hash_crc32      (const char *str);
 #else
 extern "C" uint32_t hash_crc32 (const char *str);
-#endif  // OPT_LVL != 5
+#endif  // OPT_LVL != 2
 
 #endif  // HASHT_FUNCTIONS_H

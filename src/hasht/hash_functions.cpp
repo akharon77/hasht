@@ -2,6 +2,8 @@
 #include <immintrin.h>
 #include <nmmintrin.h>
 
+#include <stdio.h>
+
 #include "general.h"
 #include "hasht/hash_functions.h"
 #include "test/config.h"
@@ -62,7 +64,7 @@ uint32_t hash_rotl(const char *str)
     return res;
 }
 
-#if OPT_LVL != 5
+#if OPT_LVL != 2
 uint32_t hash_crc32(const char *str)
 {
     ASSERT(str != NULL);
@@ -110,60 +112,72 @@ uint32_t hash_crc32(const char *str)
 
     return ~crc;
 #else
-    #if OPT_LVL == 4
-        uint32_t hash  = 0;
-        // #if OPT_LVL == 3
-            __m256i zeros  = _mm256_setzero_si256();
-            __m256i str_mm = _mm256_load_si256((const __m256i*) str);
-            __m256i equal  = _mm256_cmpeq_epi8(zeros, str_mm);
-            int32_t mask   = _mm256_movemask_epi8(equal);
-            uint32_t len   = _lzcnt_u32(*(uint32_t*) (&mask));
-        // #else
-        //     uint32_t len   = strlen(str);
-        // #endif  // OPT_LVL >= 3
+    // #if OPT_LVL == 4
+    //     uint32_t hash  = 0;
+    //     // #if OPT_LVL == 3
+           //     __m256i zeros  = _mm256_setzero_si256();
+           //     __m256i str_mm = _mm256_load_si256((const __m256i*) str);
+           //     __m256i equal  = _mm256_cmpeq_epi8(zeros, str_mm);
+           //     int32_t mask   = _mm256_movemask_epi8(equal);
+           //     uint32_t len   = _tzcnt_u32(*(uint32_t*) (&mask));
+    //     // #else
+    //     //     uint32_t len   = strlen(str);
+    //     // #endif  // OPT_LVL >= 3
+    //     //
+    //     const char *old_str = str;
 
-        uint32_t full_64  = len /  sizeof(uint64_t);
-                            len %= sizeof(uint64_t);
+    //     printf("======================\n");
+    //     printf("%d\n", mask);
+    //     printf("%lu\n", len);
 
-        uint32_t full_32  = len /  sizeof(uint32_t);
-                            len %= sizeof(uint32_t);
+    //     uint32_t full_64  = len /  sizeof(uint64_t);
+    //                         len %= sizeof(uint64_t);
 
-        uint32_t full_16  = len /  sizeof(uint16_t);
-                            len %= sizeof(uint16_t);
+    //     uint32_t full_32  = len /  sizeof(uint32_t);
+    //                         len %= sizeof(uint32_t);
 
-        for (uint32_t i = 0; i < full_64; i++) 
-        {
-            hash = _mm_crc32_u64(hash, *(uint64_t*) str);
-            str += sizeof(uint64_t);
-        }
-        for (uint32_t i = 0; i < full_32; i++) 
-        {
-            hash = _mm_crc32_u32(hash, *(uint32_t*) str);
-            str += sizeof(uint32_t);
-        }
+    //     uint32_t full_16  = len /  sizeof(uint16_t);
+    //                         len %= sizeof(uint16_t);
+    //     for (uint32_t i = 0; i < full_64; i++) 
+    //     {
+    //         hash = _mm_crc32_u64(hash, *(uint64_t*) str);
+    //         printf("%lu\n", hash);
+    //         str += sizeof(uint64_t);
+    //     }
+    //     for (uint32_t i = 0; i < full_32; i++) 
+    //     {
+    //         hash = _mm_crc32_u32(hash, *(uint32_t*) str);
+    //         printf("%lu\n", hash);
+    //         str += sizeof(uint32_t);
+    //     }
 
-        for (uint32_t i = 0; i < full_16; i++) 
-        {
-            hash = _mm_crc32_u16(hash, *(uint16_t*) str);
-            str += sizeof(uint16_t);
-        }
+    //     for (uint32_t i = 0; i < full_16; i++) 
+    //     {
+    //         hash = _mm_crc32_u16(hash, *(uint16_t*) str);
+    //         printf("%lu\n", hash);
+    //         str += sizeof(uint16_t);
+    //     }
 
-        for (uint32_t i = 0; i < len; i++) 
-        {
-            hash = _mm_crc32_u8(hash, *(uint8_t*) str);
-            ++str;
-        }
+    //     for (uint32_t i = 0; i < len; i++) 
+    //     {
+    //         hash = _mm_crc32_u8(hash, *(uint8_t*) str);
+    //         printf("%lu\n", hash);
+    //         ++str;
+    //     }
 
-        return hash;
-    #else
+    //     // if (hash == 0)
+    //         printf("%s\n", old_str);
+
+    //     return hash;
+    // #else
         uint32_t hash = 0;
-        #if OPT_LVL == 2
-            for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
-            {
-                hash = _mm_crc32_u64(hash, *(uint64_t*) str);
-                str += sizeof(uint64_t);
-            }
-        #else
+        // #if OPT_LVL == 2
+        //     for (uint32_t i = 0; i < USE_CASE_MAX_WORD_LEN * 8 / 64; ++i)
+        //     {
+        //         hash = _mm_crc32_u64(hash, *(uint64_t*) str);
+        //         str += sizeof(uint64_t);
+        //     }
+        // #else
             asm
             (
                 ".intel_syntax noprefix\n\t"
@@ -175,9 +189,9 @@ uint32_t hash_crc32(const char *str)
                 :"=r"(hash)          
                 :"r"(str)
             );
-        #endif  // OPT_LVL == 2
+        // #endif  // OPT_LVL == 2
         return hash;
-    #endif  // OPT_LEVEL == 4
-#endif  // OPT_LEVEL == 0
+    // #endif  // OPT_LEVEL == 4
+#endif  // OPT_LVL == 0 || OPT_LVL == 1
 }
-#endif  // OPT_LVL != 5
+#endif  // OPT_LVL != 2

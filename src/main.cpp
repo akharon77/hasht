@@ -6,7 +6,7 @@
 int main(int argc, const char *argv[])
 {
     HashTable hasht = {};
-    HashTableCtor(&hasht, LAB_SIZE, hash_vice);
+    HashTableCtor(&hasht, LAB_SIZE, hash_const);
 
 #ifdef _LEN_TEST
     HashTableLenTest test = {};

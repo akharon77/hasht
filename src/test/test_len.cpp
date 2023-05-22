@@ -26,6 +26,11 @@ void HashTableLenTestCtor(HashTableLenTest *test, HashTable *hasht, const char *
 
     TextInfoMarkout(&test->text, &err);
     ASSERT(err == 0);
+
+    TextInfoOptimize(&test->text);
+
+    for (uint32_t i = 0; i < test->text.words_cnt; ++i)
+        HashTableInsert(test->hasht, test->text.words[i]);
 }
 
 void HashTableLenTestDtor(HashTableLenTest *test)
@@ -49,17 +54,12 @@ void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const 
     ASSERT (hash_fun      != NULL);
     ASSERT (hash_fun_name != NULL);
 
-    HashTableClear  (test->hasht);
+    test->hasht->hash_fun = hash_fun;
     HashTableRehash (test->hasht, size);
 
     test->result = (uint32_t*) realloc(test->result, size * sizeof(uint32_t));
 
     test->hash_fun_name   = hash_fun_name;
-
-    test->hasht->hash_fun = hash_fun;
-
-    for (uint32_t i = 0; i < test->text.words_cnt; ++i)
-        HashTableInsert(test->hasht, test->text.words[i]);
 
     for (uint32_t i = 0; i < test->hasht->size; ++i)
         test->result[i] = test->hasht->lists[i].size;
