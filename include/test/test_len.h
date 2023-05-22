@@ -19,12 +19,12 @@ struct HashTableLenTest
 };
 
 #define HashTableLenTestExec(test, hash_fun, size) HashTableLenTestExec_(test, hash_fun, #hash_fun, size)
-#define HashTableLenTestFast(test, fun_name)                \
-do                                                          \
-{                                                           \
-    HashTableLenTestExec(test, hash_ ## fun_name, LAB_CNT); \
-    HashTableLenTestSaveResults(test);                      \
-}                                                           \
+#define HashTableLenTestFast(test, fun_name)                 \
+do                                                           \
+{                                                            \
+    HashTableLenTestExec(test, hash_ ## fun_name, LAB_SIZE); \
+    HashTableLenTestSaveResults(test);                       \
+}                                                            \
 while (0)
 
 void HashTableLenTestCtor  (HashTableLenTest *test, HashTable *hasht, const char *input_filename);

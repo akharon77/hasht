@@ -16,7 +16,7 @@ void HashTableLenTestCtor(HashTableLenTest *test, HashTable *hasht, const char *
     test->input_filename = input_filename;
 
     test->hash_fun_name  = NULL;
-    test->result         = (uint32_t*) calloc(hasht->size, sizeof(uint32_t));
+    test->result         = NULL;
 
     TextInfoCtor(&test->text);
 
@@ -51,6 +51,8 @@ void HashTableLenTestExec_(HashTableLenTest *test, HashFunction hash_fun, const 
 
     HashTableClear  (test->hasht);
     HashTableRehash (test->hasht, size);
+
+    test->result = (uint32_t*) realloc(test->result, size * sizeof(uint32_t));
 
     test->hash_fun_name   = hash_fun_name;
 
