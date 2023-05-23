@@ -1,0 +1,297 @@
+Flat profile:
+
+Each sample counts as 0.01 seconds.
+  %   cumulative   self              self     total           
+ time   seconds   seconds    calls  ms/call  ms/call  name    
+ 68.18      0.30     0.30 20145379     0.00     0.00  hash_crc32(char const*)
+ 18.18      0.38     0.08 20000000     0.00     0.00  HashTableFind(HashTable*, char const*, unsigned int*)
+  9.09      0.42     0.04        1    40.00   430.00  HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int)
+  2.27      0.43     0.01       16     0.62     0.62  BufferListRealloc(BufferList*, unsigned int)
+  2.27      0.44     0.01                             _init
+  0.00      0.44     0.00   210900     0.00     0.00  BufferListPop(BufferList*)
+  0.00      0.44     0.00   145363     0.00     0.00  ListPushBack(List*, char const*)
+  0.00      0.44     0.00   145363     0.00     0.00  HashTableInsert(HashTable*, char const*)
+  0.00      0.44     0.00    87252     0.00     0.00  ListPopFront(List*)
+  0.00      0.44     0.00    87252     0.00     0.00  BufferListAdd(BufferList*, int)
+  0.00      0.44     0.00    65539     0.00     0.00  BufferListDtor(BufferList*)
+  0.00      0.44     0.00    65537     0.00     0.00  ListCtor(List*, BufferList*)
+  0.00      0.44     0.00    65537     0.00     0.00  ListDtor(List*)
+  0.00      0.44     0.00       16     0.00     0.45  HashTableRehash(HashTable*, unsigned int)
+  0.00      0.44     0.00        2     0.00     0.00  HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*))
+  0.00      0.44     0.00        2     0.00     0.00  HashTableDtor(HashTable*)
+  0.00      0.44     0.00        2     0.00     0.00  BufferListCtor(BufferList*, unsigned int)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoCtor(TextInfo*)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoDtor(TextInfo*)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoMarkout(TextInfo*, int*)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoPrepare(TextInfo*)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoOptimize(TextInfo*)
+  0.00      0.44     0.00        1     0.00     0.00  TextInfoInputFromFile(TextInfo*, char const*, int*)
+  0.00      0.44     0.00        1     0.00     0.00  HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*)
+  0.00      0.44     0.00        1     0.00     0.00  HashTableSpeedTestDtor(HashTableSpeedTest*)
+  0.00      0.44     0.00        1     0.00     0.00  HashTableSpeedTestSaveResults(HashTableSpeedTest*)
+
+ %         the percentage of the total running time of the
+time       program used by this function.
+
+cumulative a running sum of the number of seconds accounted
+ seconds   for by this function and those listed above it.
+
+ self      the number of seconds accounted for by this
+seconds    function alone.  This is the major sort for this
+           listing.
+
+calls      the number of times this function was invoked, if
+           this function is profiled, else blank.
+
+ self      the average number of milliseconds spent in this
+ms/call    function per call, if this function is profiled,
+	   else blank.
+
+ total     the average number of milliseconds spent in this
+ms/call    function and its descendents per call, if this
+	   function is profiled, else blank.
+
+name       the name of the function.  This is the minor sort
+           for this listing. The index shows the location of
+	   the function in the gprof listing. If the index is
+	   in parenthesis it shows where it would appear in
+	   the gprof listing if it were to be printed.
+
+Copyright (C) 2012-2021 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+		     Call graph (explanation follows)
+
+
+granularity: each sample hit covers 4 byte(s) for 2.27% of 0.44 seconds
+
+index % time    self  children    called     name
+                                                 <spontaneous>
+[1]     97.7    0.00    0.43                 main [1]
+                0.04    0.39       1/1           HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+                0.00    0.00       1/2           HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [13]
+                0.00    0.00       1/1           HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+                0.00    0.00       1/1           HashTableSpeedTestSaveResults(HashTableSpeedTest*) [34]
+                0.00    0.00       1/2           HashTableDtor(HashTable*) [24]
+                0.00    0.00       1/1           TextInfoDtor(TextInfo*) [27]
+                0.00    0.00       1/1           HashTableSpeedTestDtor(HashTableSpeedTest*) [33]
+-----------------------------------------------
+                0.04    0.39       1/1           main [1]
+[2]     97.7    0.04    0.39       1         HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+                0.08    0.30 20000000/20000000     HashTableFind(HashTable*, char const*, unsigned int*) [3]
+                0.00    0.01   58111/58111       HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+                0.00    0.00   58111/145363      ListPushBack(List*, char const*) [10]
+                0.00    0.00       1/2           HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [13]
+                0.00    0.00       1/2           HashTableDtor(HashTable*) [24]
+-----------------------------------------------
+                0.08    0.30 20000000/20000000     HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+[3]     85.9    0.08    0.30 20000000         HashTableFind(HashTable*, char const*, unsigned int*) [3]
+                0.30    0.00 20000000/20145379     hash_crc32(char const*) [4]
+-----------------------------------------------
+                0.00    0.00  145379/20145379     HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+                0.30    0.00 20000000/20145379     HashTableFind(HashTable*, char const*, unsigned int*) [3]
+[4]     68.2    0.30    0.00 20145379         hash_crc32(char const*) [4]
+-----------------------------------------------
+                0.00    0.00   65537/210900      ListCtor(List*, BufferList*) [11]
+                0.00    0.01  145363/210900      ListPushBack(List*, char const*) [10]
+[5]      2.3    0.00    0.01  210900         BufferListPop(BufferList*) [5]
+                0.01    0.00      16/16          BufferListRealloc(BufferList*, unsigned int) [6]
+-----------------------------------------------
+                0.01    0.00      16/16          BufferListPop(BufferList*) [5]
+[6]      2.3    0.01    0.00      16         BufferListRealloc(BufferList*, unsigned int) [6]
+-----------------------------------------------
+                                                 <spontaneous>
+[7]      2.3    0.01    0.00                 _init [7]
+-----------------------------------------------
+[8]      2.1    0.00    0.01   58111+87268   <cycle 1 as a whole> [8]
+                0.00    0.01      16             HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+                0.00    0.00  145363             HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+-----------------------------------------------
+                                  16             HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+[9]      1.6    0.00    0.01      16         HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+                0.00    0.00   87252/145363      ListPushBack(List*, char const*) [10]
+                0.00    0.00   65535/65537       ListCtor(List*, BufferList*) [11]
+                0.00    0.00   87252/87252       ListPopFront(List*) [20]
+                               87252             HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+-----------------------------------------------
+                0.00    0.00   58111/145363      HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+                0.00    0.00   87252/145363      HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+[10]     1.6    0.00    0.01  145363         ListPushBack(List*, char const*) [10]
+                0.00    0.01  145363/210900      BufferListPop(BufferList*) [5]
+-----------------------------------------------
+                0.00    0.00       2/65537       HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [13]
+                0.00    0.00   65535/65537       HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+[11]     0.7    0.00    0.00   65537         ListCtor(List*, BufferList*) [11]
+                0.00    0.00   65537/210900      BufferListPop(BufferList*) [5]
+-----------------------------------------------
+                               87252             HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+                0.00    0.01   58111/58111       HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+[12]     0.5    0.00    0.00  145363         HashTableInsert(HashTable*, char const*) <cycle 1> [12]
+                0.00    0.00  145379/20145379     hash_crc32(char const*) [4]
+                                  16             HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+-----------------------------------------------
+                0.00    0.00       1/2           main [1]
+                0.00    0.00       1/2           HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+[13]     0.0    0.00    0.00       2         HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [13]
+                0.00    0.00       2/65537       ListCtor(List*, BufferList*) [11]
+                0.00    0.00       2/2           BufferListCtor(BufferList*, unsigned int) [25]
+-----------------------------------------------
+                0.00    0.00   87252/87252       HashTableRehash(HashTable*, unsigned int) <cycle 1> [9]
+[20]     0.0    0.00    0.00   87252         ListPopFront(List*) [20]
+                0.00    0.00   87252/87252       BufferListAdd(BufferList*, int) [21]
+-----------------------------------------------
+                0.00    0.00   87252/87252       ListPopFront(List*) [20]
+[21]     0.0    0.00    0.00   87252         BufferListAdd(BufferList*, int) [21]
+-----------------------------------------------
+                0.00    0.00       2/65539       HashTableDtor(HashTable*) [24]
+                0.00    0.00   65537/65539       ListDtor(List*) [23]
+[22]     0.0    0.00    0.00   65539         BufferListDtor(BufferList*) [22]
+-----------------------------------------------
+                0.00    0.00   65537/65537       HashTableDtor(HashTable*) [24]
+[23]     0.0    0.00    0.00   65537         ListDtor(List*) [23]
+                0.00    0.00   65537/65539       BufferListDtor(BufferList*) [22]
+-----------------------------------------------
+                0.00    0.00       1/2           main [1]
+                0.00    0.00       1/2           HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int) [2]
+[24]     0.0    0.00    0.00       2         HashTableDtor(HashTable*) [24]
+                0.00    0.00   65537/65537       ListDtor(List*) [23]
+                0.00    0.00       2/65539       BufferListDtor(BufferList*) [22]
+-----------------------------------------------
+                0.00    0.00       2/2           HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [13]
+[25]     0.0    0.00    0.00       2         BufferListCtor(BufferList*, unsigned int) [25]
+-----------------------------------------------
+                0.00    0.00       1/1           HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+[26]     0.0    0.00    0.00       1         TextInfoCtor(TextInfo*) [26]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[27]     0.0    0.00    0.00       1         TextInfoDtor(TextInfo*) [27]
+-----------------------------------------------
+                0.00    0.00       1/1           HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+[28]     0.0    0.00    0.00       1         TextInfoMarkout(TextInfo*, int*) [28]
+                0.00    0.00       1/1           TextInfoPrepare(TextInfo*) [29]
+-----------------------------------------------
+                0.00    0.00       1/1           TextInfoMarkout(TextInfo*, int*) [28]
+[29]     0.0    0.00    0.00       1         TextInfoPrepare(TextInfo*) [29]
+-----------------------------------------------
+                0.00    0.00       1/1           HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+[30]     0.0    0.00    0.00       1         TextInfoOptimize(TextInfo*) [30]
+-----------------------------------------------
+                0.00    0.00       1/1           HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+[31]     0.0    0.00    0.00       1         TextInfoInputFromFile(TextInfo*, char const*, int*) [31]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[32]     0.0    0.00    0.00       1         HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*) [32]
+                0.00    0.00       1/1           TextInfoCtor(TextInfo*) [26]
+                0.00    0.00       1/1           TextInfoInputFromFile(TextInfo*, char const*, int*) [31]
+                0.00    0.00       1/1           TextInfoMarkout(TextInfo*, int*) [28]
+                0.00    0.00       1/1           TextInfoOptimize(TextInfo*) [30]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[33]     0.0    0.00    0.00       1         HashTableSpeedTestDtor(HashTableSpeedTest*) [33]
+-----------------------------------------------
+                0.00    0.00       1/1           main [1]
+[34]     0.0    0.00    0.00       1         HashTableSpeedTestSaveResults(HashTableSpeedTest*) [34]
+-----------------------------------------------
+
+ This table describes the call tree of the program, and was sorted by
+ the total amount of time spent in each function and its children.
+
+ Each entry in this table consists of several lines.  The line with the
+ index number at the left hand margin lists the current function.
+ The lines above it list the functions that called this function,
+ and the lines below it list the functions this one called.
+ This line lists:
+     index	A unique number given to each element of the table.
+		Index numbers are sorted numerically.
+		The index number is printed next to every function name so
+		it is easier to look up where the function is in the table.
+
+     % time	This is the percentage of the `total' time that was spent
+		in this function and its children.  Note that due to
+		different viewpoints, functions excluded by options, etc,
+		these numbers will NOT add up to 100%.
+
+     self	This is the total amount of time spent in this function.
+
+     children	This is the total amount of time propagated into this
+		function by its children.
+
+     called	This is the number of times the function was called.
+		If the function called itself recursively, the number
+		only includes non-recursive calls, and is followed by
+		a `+' and the number of recursive calls.
+
+     name	The name of the current function.  The index number is
+		printed after it.  If the function is a member of a
+		cycle, the cycle number is printed between the
+		function's name and the index number.
+
+
+ For the function's parents, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the function into this parent.
+
+     children	This is the amount of time that was propagated from
+		the function's children into this parent.
+
+     called	This is the number of times this parent called the
+		function `/' the total number of times the function
+		was called.  Recursive calls to the function are not
+		included in the number after the `/'.
+
+     name	This is the name of the parent.  The parent's index
+		number is printed after it.  If the parent is a
+		member of a cycle, the cycle number is printed between
+		the name and the index number.
+
+ If the parents of the function cannot be determined, the word
+ `<spontaneous>' is printed in the `name' field, and all the other
+ fields are blank.
+
+ For the function's children, the fields have the following meanings:
+
+     self	This is the amount of time that was propagated directly
+		from the child into the function.
+
+     children	This is the amount of time that was propagated from the
+		child's children to the function.
+
+     called	This is the number of times the function called
+		this child `/' the total number of times the child
+		was called.  Recursive calls by the child are not
+		listed in the number after the `/'.
+
+     name	This is the name of the child.  The child's index
+		number is printed after it.  If the child is a
+		member of a cycle, the cycle number is printed
+		between the name and the index number.
+
+ If there are any cycles (circles) in the call graph, there is an
+ entry for the cycle-as-a-whole.  This entry shows who called the
+ cycle (as parents) and the members of the cycle (as children.)
+ The `+' recursive calls entry shows the number of function calls that
+ were internal to the cycle, and the calls entry for each member shows,
+ for that member, how many times it was called from other members of
+ the cycle.
+
+Copyright (C) 2012-2021 Free Software Foundation, Inc.
+
+Copying and distribution of this file, with or without modification,
+are permitted in any medium without royalty provided the copyright
+notice and this notice are preserved.
+
+Index by function name
+
+   [4] hash_crc32(char const*) [3] HashTableFind(HashTable*, char const*, unsigned int*) [31] TextInfoInputFromFile(TextInfo*, char const*, int*)
+  [20] ListPopFront(List*)    [25] BufferListCtor(BufferList*, unsigned int) [32] HashTableSpeedTestCtor(HashTableSpeedTest*, HashTable*, char const*)
+  [10] ListPushBack(List*, char const*) [22] BufferListDtor(BufferList*) [33] HashTableSpeedTestDtor(HashTableSpeedTest*)
+  [26] TextInfoCtor(TextInfo*) [12] HashTableInsert(HashTable*, char const*) [2] HashTableSpeedTestExec_(HashTableSpeedTest*, unsigned int (*)(char const*), char const*, unsigned int)
+  [27] TextInfoDtor(TextInfo*) [9] HashTableRehash(HashTable*, unsigned int) [34] HashTableSpeedTestSaveResults(HashTableSpeedTest*)
+  [21] BufferListAdd(BufferList*, int) [28] TextInfoMarkout(TextInfo*, int*) [11] ListCtor(List*, BufferList*)
+   [5] BufferListPop(BufferList*) [29] TextInfoPrepare(TextInfo*) [23] ListDtor(List*)
+  [13] HashTableCtor(HashTable*, unsigned int, unsigned int (*)(char const*)) [30] TextInfoOptimize(TextInfo*) [7] _init
+  [24] HashTableDtor(HashTable*) [6] BufferListRealloc(BufferList*, unsigned int) [8] <cycle 1>

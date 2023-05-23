@@ -3,10 +3,11 @@ global hash_crc32
 section .text
 
 hash_crc32:
-    vpxor   xmm0, xmm0, xmm0
-    vpcmpeqb        ymm0, ymm0, YWORD [rdi]
-    vpmovmskb       ecx, ymm0
-    tzcnt   ecx, ecx
+    vpxor       xmm0, xmm0, xmm0
+    vpcmpeqb    ymm0, ymm0, yword [rdi]
+    vpmovmskb   ecx,  ymm0
+    tzcnt       ecx,  ecx
+
     xor eax, eax
 
 loop_32:
@@ -35,38 +36,4 @@ loop_8:
 
 end:
     ret
-
-mv_seq:
-    db   15
-    db   14
-    db   13
-    db   12
-    db   11
-    db   10
-    db   9
-    db   8
-    db   7
-    db   6
-    db   5
-    db   4
-    db   3
-    db   2
-    db   1
-    db   0
-    db   15
-    db   14
-    db   13
-    db   12
-    db   11
-    db   10
-    db   9
-    db   8
-    db   7
-    db   6
-    db   5
-    db   4
-    db   3
-    db   2
-    db   1
-    db   0
 
