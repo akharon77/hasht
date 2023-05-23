@@ -26,6 +26,10 @@ do                                                            \
     HashTableLenTestSaveResults(test);                        \
     HashTableLenTestExec(test, hash_ ## fun_name, LAB_SIZE2); \
     HashTableLenTestSaveResults(test);                        \
+    HashTableLenTestExec(test, hash_ ## fun_name, LAB_SIZE3); \
+    HashTableLenTestSaveResults(test);                        \
+    HashTableLenTestExec(test, hash_ ## fun_name, LAB_SIZE4); \
+    HashTableLenTestSaveResults(test);                        \
 }                                                             \
 while (0)
 
